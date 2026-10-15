@@ -31,16 +31,17 @@ jobs:
         run: |
           node --check main.mjs
           node --check i18n.mjs
-          node --test tests/site-shell.test.mjs
+          node --check guided-discovery.mjs
+          node --test tests/*.test.mjs
       - name: Prepare public-only site
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p public
-          cp index.html styles.css main.mjs i18n.mjs config.mjs auth.mjs companion-api.mjs public/
+          cp index.html styles.css main.mjs i18n.mjs config.mjs auth.mjs companion-api.mjs guided-discovery.mjs public/
           touch public/.nojekyll
           test -s public/index.html
-          test "$(find public -maxdepth 1 -type f | wc -l)" -eq 8
+          test "$(find public -maxdepth 1 -type f | wc -l)" -eq 9
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

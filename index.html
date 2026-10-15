@@ -51,29 +51,19 @@
             <p class="chat-bubble" data-t="chatGreeting">Chào bạn! Tôi là BuiEdu. Bạn muốn học một kỹ năng mới, cải thiện công việc hay đang có mục tiêu nào cần bắt đầu?</p>
           </div>
         </div>
+        <div id="chatOptions" class="chat-options" aria-label="Gợi ý trả lời" hidden></div>
         <div class="chat-starters" id="chatStarters" aria-label="Gợi ý bắt đầu">
+          <button type="button" data-example="business" data-t="starter3">Tôi muốn bán được hàng</button>
           <button type="button" data-example="construction" data-t="starter1">Dùng AI trong công việc</button>
           <button type="button" data-example="education" data-t="starter2">Học một kỹ năng mới</button>
-          <button type="button" data-example="business" data-t="starter3">Phát triển kinh doanh</button>
         </div>
         <form id="previewForm" class="chat-form">
-          <label class="sr-only" for="profession" data-t="professionLabel">Bạn làm việc trong lĩnh vực nào?</label>
-          <div class="chat-tools">
-            <span data-t="roleHint">Bối cảnh:</span>
-            <select id="profession" required>
-              <option value="construction" data-t="optConstruction">Xây dựng / kỹ thuật</option>
-              <option value="office" data-t="optOffice">Văn phòng</option>
-              <option value="education" data-t="optEducation">Giáo dục</option>
-              <option value="business" data-t="optBusiness">Kinh doanh</option>
-              <option value="other" data-t="optOther">Khác</option>
-            </select>
-          </div>
           <div class="chat-composer">
             <label class="sr-only" for="goal" data-t="goalLabel">Bạn muốn BuiEdu giúp điều gì?</label>
             <textarea id="goal" rows="2" maxlength="500" required placeholder="Hãy chia sẻ mục tiêu của bạn..."></textarea>
             <button type="submit" class="send-button" aria-label="Gửi" title="Gửi"><span aria-hidden="true">↑</span></button>
           </div>
-          <p class="chat-footnote" data-t="privacyNotice">Bản mô phỏng chạy trong trình duyệt. Không nhập thông tin nhạy cảm; nội dung không được lưu hoặc gửi lên máy chủ.</p>
+          <div class="chat-bottom"><p class="chat-footnote" data-t="privacyNotice">Bản mô phỏng chạy trong trình duyệt. Không nhập thông tin nhạy cảm; nội dung không được lưu hoặc gửi lên máy chủ.</p><button type="button" id="resetChat" class="chat-reset" data-t="resetChat">Bắt đầu lại</button></div>
         </form>
       </section>
     </section>

@@ -40,8 +40,9 @@ test('All rendered labels have Vietnamese and English translations',()=>{
 test('Demo submits into a chat without impersonating a live model',async()=>{
   assert.match(js,/addTurn\('user',message\)/);
   assert.match(js,/showDiscoveryResult\(result\)/);
-  assert.match(js,/advanceDiscovery\(session/);
+  assert.match(js,/continueGoal\(session/);
   assert.match(html,/id="chatOptions"/);
+  assert.match(js,/from '\.\/intent-router\.mjs'/);
   assert.match(js,/if\(siteConfig.mode==='live'\)/);
   assert.match(html,/id="chatDemo"|data-t="chatDemo"/);
   assert.equal(siteConfig.mode,'preview');

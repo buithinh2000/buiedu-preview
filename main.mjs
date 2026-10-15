@@ -2,7 +2,7 @@ import {copy} from './i18n.mjs';
 import {siteConfig} from './config.mjs';
 import {CompanionApi} from './companion-api.mjs';
 import {getAccessToken} from './auth.mjs';
-import {initialDiscovery,advanceDiscovery} from './guided-discovery.mjs';
+import {beginGoal,continueGoal} from './intent-router.mjs';
 
 const $=id=>document.getElementById(id);
 const language=$('language');
@@ -117,8 +117,8 @@ function submitMessage(message){
     void sendLive(message);
   }else{
     const result=session?
-      advanceDiscovery(session,{message,locale}):
-      initialDiscovery(message,locale);
+      continueGoal(session,{message,locale}):
+      beginGoal(message,locale);
     showDiscoveryResult(result);
   }
 }
@@ -147,7 +147,7 @@ options.addEventListener('click',event=>{
   const button=event.target.closest('button[data-choice]');
   if(!button||!session||siteConfig.mode==='live')return;
   addTurn('user',button.textContent);
-  const result=advanceDiscovery(session,{choice:button.dataset.choice,locale});
+  const result=continueGoal(session,{choice:button.dataset.choice,locale});
   showDiscoveryResult(result);
 });
 $('resetChat').addEventListener('click',resetConversation);

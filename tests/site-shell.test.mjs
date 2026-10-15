@@ -37,7 +37,7 @@ test('All rendered labels have Vietnamese and English translations',()=>{
   }
 });
 
-test('Demo submits into a chat without impersonating a live model',()=>{
+test('Demo submits into a chat without impersonating a live model',async()=>{
   assert.match(js,/addTurn\('user',message\)/);
   assert.match(js,/addTurn\('assistant',advice/);
   assert.match(js,/if\(siteConfig.mode==='live'\)/);

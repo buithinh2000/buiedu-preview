@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#153a42">
+  <meta name="description" content="BuiEdu — người bạn AI đồng hành giúp bạn học hỏi, thực hành và phát triển năng lực theo mục tiêu của mình.">
+  <title>BuiEdu — Your AI. Your Growth. Your Future.</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./main.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="shell navrow">
+      <a class="logo" href="./" aria-label="BuiEdu home">bui<span>edu</span><b>.</b></a>
+      <nav aria-label="Main navigation">
+        <a href="#how" data-t="navHow">Cách hoạt động</a>
+        <a href="#why" data-t="navWhy">BuiEdu giúp gì?</a>
+        <a class="nav-cta" href="#try" data-t="navTry">Trải nghiệm</a>
+      </nav>
+      <label class="language"><span class="sr-only">Language</span>
+        <select id="language" aria-label="Language">
+          <option value="vi">Tiếng Việt</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span><span data-t="heroEyebrow">HÀNH TRÌNH PHÁT TRIỂN BẮT ĐẦU TỪ BẠN</span></p>
+        <h1 data-t="heroTitle">Một người bạn AI.<br>Luôn hướng về <em>sự tiến bộ của bạn.</em></h1>
+        <p class="lead" data-t="heroDescription">Không chỉ trả lời câu hỏi. BuiEdu được xây dựng để hiểu mục tiêu, giúp bạn thực hành từng bước và đồng hành cùng sự phát triển dài hạn.</p>
+        <div class="buttons">
+          <a href="#try" class="primary" data-t="heroStart">Khám phá ngay <span aria-hidden="true">↗</span></a>
+          <a href="#how" class="secondary" data-t="heroLearn">Tìm hiểu cách hoạt động</a>
+        </div>
+        <p class="preview-note" data-t="previewWarning">Đang phát triển • Trải nghiệm hiện tại là mô phỏng, chưa dùng AI hoặc tài khoản thật.</p>
+      </div>
+      <div class="hero-visual" aria-label="BuiEdu growth pathway">
+        <div class="floating-label"><span class="pulse"></span><span data-t="visualTop">Mục tiêu của bạn</span></div>
+        <div class="path-node selected"><span class="stepnum">01</span><div><strong data-t="visual1">Hiểu bạn</strong><small data-t="visual1desc">Bắt đầu từ công việc và mong muốn</small></div><span class="arrow">↗</span></div>
+        <div class="pathline"></div>
+        <div class="path-node"><span class="stepnum">02</span><div><strong data-t="visual2">Học qua thực hành</strong><small data-t="visual2desc">Một hành động thiết thực mỗi lần</small></div><span class="arrow">↗</span></div>
+        <div class="pathline"></div>
+        <div class="path-node"><span class="stepnum">03</span><div><strong data-t="visual3">Tiếp tục phát triển</strong><small data-t="visual3desc">Ghi nhận tiến bộ, không bắt đầu lại</small></div><span class="arrow">↗</span></div>
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+      </div>
+    </section>
+    <section class="band" id="why">
+      <div class="shell">
+        <div class="sectionhead"><p class="eyebrow" data-t="valueEyebrow">KHÁC VỚI MỘT KHÓA HỌC CỐ ĐỊNH</p><h2 data-t="valueHeading">Thiết kế theo con đường của riêng bạn.</h2></div>
+        <div class="features">
+          <article class="feature"><span class="symbol">◎</span><h3 data-t="feature1">Mục tiêu thực tế</h3><p data-t="feature1desc">Học những gì giúp ích cho công việc, đời sống và dự định của bạn.</p></article>
+          <article class="feature"><span class="symbol">↗</span><h3 data-t="feature2">Hành động nhỏ, tiến bộ thật</h3><p data-t="feature2desc">Thay vì quá nhiều kiến thức, tập trung một việc hữu ích và kiểm tra kết quả.</p></article>
+          <article class="feature"><span class="symbol">◌</span><h3 data-t="feature3">Đồng hành dài hạn</h3><p data-t="feature3desc">Định hướng dài hạn: ghi nhớ mục tiêu được cho phép và tiếp tục qua các phiên.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="shell steps" id="how">
+      <div class="sectionhead"><p class="eyebrow" data-t="howEyebrow">ĐƠN GIẢN ĐỂ BẮT ĐẦU</p><h2 data-t="howHeading">Không cần biết nhiều về AI.</h2></div>
+      <div class="stepsgrid">
+        <div><span>01</span><h3 data-t="how1">Chia sẻ điều bạn muốn đạt</h3><p data-t="how1desc">Một mục tiêu nhỏ hoặc một vấn đề công việc đang gặp phải.</p></div>
+        <div><span>02</span><h3 data-t="how2">Chọn việc đầu tiên để làm</h3><p data-t="how2desc">Nhận một gợi ý cụ thể, vừa sức và có thể bắt đầu ngay.</p></div>
+        <div><span>03</span><h3 data-t="how3">Phản hồi và phát triển</h3><p data-t="how3desc">Đánh giá điều đã thử; sản phẩm hoàn thiện sẽ có trí nhớ và cá nhân hóa.</p></div>
+      </div>
+    </section>
+    <section class="try-area" id="try">
+      <div class="shell try-grid">
+        <div class="try-intro">
+          <p class="eyebrow" data-t="tryEyebrow">KHÁM PHÁ BUIEDU</p>
+          <h2 data-t="tryTitle">Bước nhỏ đầu tiên của bạn là gì?</h2>
+          <p data-t="tryDescription">Thử mô phỏng cách BuiEdu biến mục tiêu thành một hành động. Bản trải nghiệm này chạy ngay trên trình duyệt, không gửi câu trả lời lên máy chủ.</p>
+          <div class="status"><span class="status-dot"></span><span data-t="statusText">Chế độ xem trước — chưa có tài khoản và AI trực tuyến</span></div>
+        </div>
+        <section class="experience" aria-labelledby="cardTitle">
+          <div class="card-head"><span class="chip" data-t="cardBadge">TRẢI NGHIỆM MẪU</span><span class="tiny">BuiEdu Companion</span></div>
+          <h3 id="cardTitle" data-t="cardTitle">Hãy bắt đầu từ bạn</h3>
+          <form id="previewForm">
+            <label for="profession" data-t="professionLabel">Bạn làm việc trong lĩnh vực nào?</label>
+            <select id="profession" required>
+              <option value="construction" data-t="optConstruction">Xây dựng / kỹ thuật</option>
+              <option value="office" data-t="optOffice">Văn phòng</option>
+              <option value="education" data-t="optEducation">Giáo dục</option>
+              <option value="business" data-t="optBusiness">Kinh doanh</option>
+              <option value="other" data-t="optOther">Khác</option>
+            </select>
+            <label for="goal" data-t="goalLabel">Một điều bạn muốn cải thiện là gì?</label>
+            <textarea id="goal" maxlength="160" rows="3" required data-placeholder-vi="Ví dụ: Tôi muốn dùng AI để báo giá nhanh hơn." data-placeholder-en="Example: I want to use AI to write estimates faster." placeholder="Ví dụ: Tôi muốn dùng AI để báo giá nhanh hơn."></textarea>
+            <button class="primary full" type="submit" data-t="makePlan">Xem gợi ý bước đầu tiên ↗</button>
+          </form>
+          <div id="previewResult" class="result" hidden aria-live="polite">
+            <p class="eyebrow" data-t="resultEyebrow">BƯỚC TIẾP THEO</p>
+            <h4 id="resultTitle"></h4>
+            <p id="resultBody"></p>
+            <p class="result-foot" data-t="resultDisclaimer">Gợi ý mô phỏng theo lĩnh vực, không phải câu trả lời từ AI.</p>
+            <button type="button" class="outline" id="resetPreview" data-t="tryAgain">Thử mục tiêu khác</button>
+          </div>
+          <p class="privacy" data-t="privacyNotice">Không nhập dữ liệu khách hàng hoặc thông tin nhạy cảm. Bản xem trước không lưu câu trả lời.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell footer-row"><a class="logo" href="./">bui<span>edu</span><b>.</b></a><p data-t="footer">Một sản phẩm đang phát triển của BuiTai. Định hướng: AI đồng hành với sự phát triển của mỗi người.</p><small>© <span id="year"></span> BuiEdu</small></div></footer>
+</body>
+</html>

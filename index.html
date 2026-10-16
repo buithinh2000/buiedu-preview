@@ -45,6 +45,36 @@
           <span class="chat-heading"><strong id="chatTitle">BuiEdu Companion</strong><small data-t="chatSubhead">Trò chuyện để bắt đầu</small></span>
           <span class="chat-demo" data-t="chatDemo">MÔ PHỎNG</span>
         </header>
+        <section class="learning-desk" id="learningDesk" hidden aria-labelledby="deskTitle">
+          <div class="desk-head">
+            <div><span class="desk-eyebrow" id="deskEyebrow">LỘ TRÌNH THỰC HÀNH · DEMO</span>
+            <h3 id="deskTitle">Mục tiêu: Giám đốc kinh doanh</h3></div>
+            <div class="desk-score" id="deskScore">0/2 <span>lượt thực hành</span></div>
+          </div>
+          <p class="desk-intro" id="deskIntro">Thay vì viết prompt, hãy thực hành đọc số liệu như người quản lý.</p>
+          <div class="desk-map" id="deskMap" aria-label="Các kỹ năng cho mục tiêu này"></div>
+          <div class="desk-case">
+            <div class="desk-case-heading"><strong id="deskCaseTitle">Bài 1 — đọc kết quả bán hàng</strong>
+              <small id="deskCaseInfo">Số liệu giả định · không cần biết AI</small></div>
+            <table class="desk-table">
+              <thead><tr><th id="deskColPerson">Nhân viên</th><th id="deskColTarget">Mục tiêu</th><th id="deskColActual">Đã bán</th></tr></thead>
+              <tbody id="deskRows"></tbody>
+            </table>
+            <p id="deskQuestion" class="desk-question">Hãy thử tìm tổng số đơn đã bán, số còn thiếu, và phần trăm hoàn thành.</p>
+            <form id="metricsForm" class="desk-form">
+              <label><span id="deskTotalLabel">Tổng đã bán</span><input type="text" inputmode="numeric" autocomplete="off" name="total" maxlength="8" placeholder="?" required></label>
+              <label><span id="deskGapLabel">Số đơn còn thiếu</span><input type="text" inputmode="numeric" autocomplete="off" name="gap" maxlength="8" placeholder="?" required></label>
+              <label><span id="deskRateLabel">Đạt (%)</span><input type="text" inputmode="decimal" autocomplete="off" name="rate" maxlength="8" placeholder="?" required></label>
+              <div class="desk-actions">
+                <button type="submit" class="desk-check" id="deskSubmit">Kiểm tra câu trả lời</button>
+                <button type="button" class="desk-hint" id="deskHint">Tôi chưa biết cách</button>
+                <button type="button" class="desk-next" id="deskNext" hidden>Thử tình huống mới →</button>
+              </div>
+            </form>
+            <p id="deskFeedback" class="desk-feedback" role="status" aria-live="polite"></p>
+          </div>
+          <p id="deskDisclaimer" class="desk-disclaimer">Chỉ kiểm tra phép tính trong ví dụ giả. Không đánh giá bạn đủ năng lực làm giám đốc.</p>
+        </section>
         <div class="chat-feed" id="chatFeed" role="log" aria-label="BuiEdu Companion" aria-live="polite" aria-relevant="additions text">
           <div class="chat-turn assistant">
             <span class="chat-mark" aria-hidden="true">b</span>

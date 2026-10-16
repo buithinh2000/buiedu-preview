@@ -2,9 +2,9 @@
 // This is NOT a live LLM. Only selected guided scenarios are supported.
 // No external AI, ungrounded profession assumptions, or fabricated mastery.
 const CAREER=/(?:giám\s*đốc\s*(?:kinh\s*doanh|bán\s*hàng)|trưởng\s*phòng\s*kinh\s*doanh|(?:sales?|sale)\s*director|(?:sales?)\s*manager|head\s*of\s*sales|director\s*of\s*sales)/i;
-const CAREER_WISH=/(?:tôi\s*(?:nói\s*)?(?:muốn|cần)|mình\s*muốn|ước\s*mơ|mục\s*tiêu|i\s*(?:want|mean|would\s*like)|my\s*goal|become|trở\s*thành|lên\s*làm)/i;
+const CAREER_WISH=/(?:tôi\s*(?:nói\s*)?(?:muốn|mong|ước)|mình\s*muốn|mục\s*tiêu|i\s*(?:want|mean|would\s*like)|my\s*goal|become|trở\s*thành|lên\s*làm)/i;
 const SALES=/(?:bán\s*(?:được|hàng|nhiều)|không\s*bán|chốt\s*đơn|khách\s*hỏi|doanh\s*thu|sell\s*more|can't\s*sell|make\s*more\s*sales)/i;
-const UNKNOWN=/(?:không\s*biết|chưa\s*biết|chưa\s*rõ|không\s*rành|tôi\s*không\s*chắc|i\s*(?:don't|dont|do\s*not)\s*know|i'?m\s*not\s*sure|not\s*sure|no\s*idea)/i;
+const UNKNOWN=/(?:không\s*biết|chưa\s*biết|chưa\s*rõ|không\s*rành|tôi\s*không\s*chắc|i\s*(?:still\s*)?(?:don't|dont|do\s*not)\s*know|i'?m\s*not\s*sure|not\s*sure|no\s*idea)/i;
 const RESET=/(?:^(?:đổi\s*(?:mục\s*tiêu|chủ\s*đề)|change\s*(?:goal|topic)|start\s*over)$)/i;
 const JOB=/(?:file\s*excel|excel|bảng\s*tính|word|email|báo\s*cáo|powerpoint|slide|báo\s*giá|spreadsheet|presentation)/i;
 const VI=/(?:\b(tôi|muốn|không|chưa|công|việc|giám|đốc|kinh|doanh|bán|hàng|trở|thành|rành)\b|[ăâđêôơưĂÂĐÊÔƠƯ])/i;
@@ -83,8 +83,15 @@ function workStart(message,locale,previous=null){
   'Mình chưa biết chính xác việc bạn muốn cải thiện nên sẽ không đoán. Bạn muốn bắt đầu từ loại kết quả nào?':
   'I am not yet sure what outcome you want, so I won’t guess. Which type of result should we start with?',workChoices(locale));
 }
+function isCareerGoal(message){
+ const occurrence=CAREER.exec(message);
+ if(!occurrence)return false;
+ const before=message.slice(0,occurrence.index);
+ // "My boss is a sales director and needs an email" is NOT a desire to become one.
+ return CAREER_WISH.test(before)&&!/(?:\b(?:email|send|ask)\b|gửi\s*(?:email|thư))/i.test(before);
+}
 function previewForGoal(message,locale,previous=null){
- if(CAREER.test(message)&&CAREER_WISH.test(message))return careerStart(message,locale,previous);
+ if(isCareerGoal(message))return careerStart(message,locale,previous);
  if(SALES.test(message)&&!CAREER.test(message))return salesStart(message,locale,previous);
  return workStart(message,locale,previous);
 }
@@ -216,7 +223,7 @@ export function continueGoal(state,{message='',choice='',locale=state?.locale}={
  const l=chooseLocale(text,locale,state.locale);
  if(RESET.test(text))return workStart(l==='vi'?'Tôi muốn học một điều mới':'I want a new goal',l,state.goal);
  if(!choice&&text){
-  const newCareer=CAREER.test(text)&&CAREER_WISH.test(text);
+  const newCareer=isCareerGoal(text);
   const newSales=SALES.test(text)&&CAREER_WISH.test(text)&&!CAREER.test(text);
   if(newCareer && state.domain!=='career'){
    const r=careerStart(text,l,state.goal);r.state.version=state.version+1;r.topicChanged=true;return r;

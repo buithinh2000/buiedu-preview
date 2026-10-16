@@ -60,7 +60,7 @@ test('Public preview links work from a GitHub Pages subfolder',()=>{
 
 test('Career conversation keeps irrelevant spreadsheet download hidden and bubbles intact',()=>{
  assert.match(html,/id="workExample" hidden/);
- assert.match(js,/workExample\.hidden=!\(result\.state\.domain==='work'&&result\.state\.focus==='excel'\)/);
+ assert.match(js,/workExample\.hidden=!\(session\.domain==='work'&&session\.focus==='excel'\)/);
  assert.match(css,/\.chat-feed>\.chat-turn\{flex-shrink:0\}/);
  assert.match(css,/\.work-example\[hidden\]\{display:none!important\}/);
 });

@@ -21,3 +21,43 @@
 .chat-feed{scroll-padding-bottom:16px}
 /* Show worksheet sample only when it is relevant to a spreadsheet conversation. */
 .work-example[hidden]{display:none!important}
+
+/* Learning workspace: tangible tasks and honest progress, not another chat transcript. */
+.learning-desk{padding:17px 20px 18px;background:#f6fbf8;border-bottom:1px solid #dcebe3;display:grid;gap:11px}
+.learning-desk[hidden]{display:none!important}
+.desk-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.desk-head h3{font-size:17px;line-height:1.25;color:#153f3c;margin:4px 0 0}
+.desk-eyebrow{display:block;font-size:10px;letter-spacing:.08em;color:#548678;font-weight:850}
+.desk-score{text-align:right;min-width:95px;font-size:24px;font-weight:850;color:#128371;line-height:1}
+.desk-score span{font-size:9px;font-weight:700;display:block;line-height:1.5;color:#6c8a81}
+.desk-intro{font-size:12px;line-height:1.45;color:#4b716b;margin:0}
+.desk-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.desk-step{border:1px solid #d9e8df;border-radius:10px;padding:9px 10px;display:grid;grid-template-columns:19px 1fr;column-gap:8px;row-gap:3px;background:#fff;font-size:11px;align-items:start}
+.desk-step strong{color:#28816f}.desk-step span{font-weight:750;color:#27524b;line-height:1.25}
+.desk-step small{grid-column:2;color:#7c928b;font-size:9px}
+.desk-step.planned{background:#f7f9f7;opacity:.75}
+.desk-case{border:1px solid #cbe4d5;border-radius:13px;background:white;padding:13px;display:grid;gap:10px}
+.desk-case-heading{display:flex;align-items:start;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.desk-case-heading strong{font-size:13px;color:#234d47}
+.desk-case-heading small{font-size:10px;color:#8a9c92}
+.desk-table{border-collapse:collapse;font-size:12px;width:100%;color:#284e48}
+.desk-table th,.desk-table td{border-bottom:1px solid #ecf1ed;text-align:center;padding:5px 7px}
+.desk-table th{background:#f3f8f5;font-size:10px;color:#5b7972}
+.desk-question{font-size:11px;color:#53746c;margin:0;line-height:1.35}
+.desk-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.desk-form label{min-width:0;display:grid;gap:4px;font-size:10px;color:#52746b;font-weight:650}
+.desk-form input{width:100%;border:1px solid #bbd6ca;border-radius:8px;background:white;min-width:0;padding:9px;color:#214942;font-size:14px}
+.desk-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;grid-column:1/-1}
+.desk-actions button{border-radius:9px;padding:9px 12px;font-size:11px;font-weight:760;border:1px solid #b2d5c5}
+.desk-check,.desk-next{background:#128371;color:#fff;border-color:#128371!important}
+.desk-hint{background:#fff;color:#127568}
+.desk-feedback{font-size:11px;color:#21594f;line-height:1.5;margin:0;min-height:0}
+.desk-feedback:empty{display:none}
+.desk-disclaimer{margin:0;color:#7f938e;font-size:10px;line-height:1.4}
+.chat-panel.has-learning .chat-feed{min-height:85px;max-height:145px;padding-top:12px;padding-bottom:10px}
+@media(max-width:760px){
+ .learning-desk{padding:14px 13px}.desk-head h3{font-size:16px}
+ .desk-map{gap:5px}.desk-step{padding:8px 6px;font-size:10px;column-gap:5px}
+ .desk-case{padding:10px}.desk-form{gap:5px}
+ .desk-actions button{padding:8px 10px}
+}

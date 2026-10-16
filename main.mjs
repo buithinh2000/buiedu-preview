@@ -4,6 +4,7 @@ import {CompanionApi} from './companion-api.mjs';
 import {getAccessToken} from './auth.mjs';
 import {beginGoal,continueGoal} from './intent-router.mjs';
 import {createCheckedQuoteCsv,verifyCheckedQuoteCsv} from './workplace-spreadsheet-csv.mjs';
+import {createCareerDesk} from './career-desk-ui.mjs';
 
 const $=id=>document.getElementById(id);
 const language=$('language');
@@ -12,6 +13,7 @@ const feed=$('chatFeed');
 const starters=$('chatStarters');
 const options=$('chatOptions');
 const workExample=$('workExample');
+const careerDesk=createCareerDesk(document);
 const input=$('goal');
 const submit=form.querySelector('button[type="submit"]');
 const api=new CompanionApi({baseUrl:siteConfig.apiBaseUrl,getAccessToken});
@@ -67,6 +69,7 @@ function resetConversation(){
   options.replaceChildren();
   starters.hidden=false;
   workExample.hidden=true;
+  careerDesk.hide();
   input.value='';
 }
 
@@ -90,9 +93,19 @@ function setLanguage(next){
 
 function showDiscoveryResult(result){
   session=result.state;
-  addTurn('assistant',result.reply,{sample:true});
-  displayOptions(result.options);
-  workExample.hidden=!(result.state.domain==='work'&&result.state.focus==='excel');
+  if(session.domain==='career'){
+    careerDesk.show({goal:session.goal,locale:session.locale});
+    const msg=session.locale==='vi'?
+      'Mình đã mở khu học thực hành cho mục tiêu giám đốc kinh doanh. Bắt đầu bằng cách tính kết quả của một đội bán hàng bên trên. Không cần biết prompt; nếu chưa biết, bấm “Tôi chưa biết cách”.':
+      'I opened a practical learning workspace for your sales director goal. Start by calculating a team’s sales figures above. No prompts needed; choose “I need help” if you are unsure.';
+    addTurn('assistant',msg,{sample:true});
+    displayOptions([]);
+  }else{
+    careerDesk.hide();
+    addTurn('assistant',result.reply,{sample:true});
+    displayOptions(result.options);
+  }
+  workExample.hidden=!(session.domain==='work'&&session.focus==='excel');
   starters.hidden=true;
 }
 
@@ -120,10 +133,25 @@ function submitMessage(message){
     options.hidden=true;starters.hidden=true;
     void sendLive(message);
   }else{
-    const result=session?
-      continueGoal(session,{message,locale}):
-      beginGoal(message,locale);
-    showDiscoveryResult(result);
+    if(session?.domain==='career'&&careerDesk.isActive()){
+      const possible=continueGoal(session,{message,locale});
+      if(possible.topicChanged&&possible.state.domain!=='career'){
+        showDiscoveryResult(possible);
+      }else if(/không\s*(?:biết|rành)|chưa\s*(?:biết|có\s*kinh\s*nghiệm)|i\s*(?:don't|dont|do not)\s*know|not\s*sure|no experience/i.test(message)){
+        const tip=careerDesk.hint();
+        addTurn('assistant',tip||copy[locale].chatNext,{sample:true});
+      }else{
+        addTurn('assistant',locale==='vi'?
+         'Đây là bản thực hành số liệu có kiểm tra kết quả, chưa phải AI hội thoại tự do. Hãy thử điền ba ô trong khu học bên trên; bản AI thật sẽ cần hiểu câu hỏi của bạn và đổi bài học linh hoạt.':
+         'This preview checks real calculations but is not a live open-ended AI tutor. Try the three fields above; the future AI tutor needs to understand your questions and adjust the lesson.',
+         {sample:true});
+      }
+    }else{
+      const result=session?
+        continueGoal(session,{message,locale}):
+        beginGoal(message,locale);
+      showDiscoveryResult(result);
+    }
   }
 }
 

@@ -42,6 +42,9 @@ test('Demo submits into a chat without impersonating a live model',async()=>{
   assert.match(js,/showDiscoveryResult\(result\)/);
   assert.match(js,/continueGoal\(session/);
   assert.match(html,/id="chatOptions"/);
+  assert.match(html,/id="downloadCsv"/);
+  assert.match(js,/verifyCheckedQuoteCsv\(sample\)/);
+  assert.match(js,/sample\.fileName/);
   assert.match(js,/from '\.\/intent-router\.mjs'/);
   assert.match(js,/if\(siteConfig.mode==='live'\)/);
   assert.match(html,/id="chatDemo"|data-t="chatDemo"/);

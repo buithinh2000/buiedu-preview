@@ -3,6 +3,7 @@ import {siteConfig} from './config.mjs';
 import {CompanionApi} from './companion-api.mjs';
 import {getAccessToken} from './auth.mjs';
 import {beginGoal,continueGoal} from './intent-router.mjs';
+import {createCheckedQuoteCsv,verifyCheckedQuoteCsv} from './workplace-spreadsheet-csv.mjs';
 
 const $=id=>document.getElementById(id);
 const language=$('language');
@@ -151,6 +152,23 @@ options.addEventListener('click',event=>{
   showDiscoveryResult(result);
 });
 $('resetChat').addEventListener('click',resetConversation);
+$('downloadCsv').addEventListener('click',()=>{
+  // Sample-only, no personal data, no model call, no backend request.
+  const sample=createCheckedQuoteCsv({
+    title:locale==='vi'?'BuiEdu - Báo giá minh họa':'BuiEdu - Example quotation',
+    currency:'AUD',items:[
+      {description:locale==='vi'?'Công việc mẫu A':'Sample work A',quantity:2,unitPriceCents:12500},
+      {description:locale==='vi'?'Vật tư mẫu B':'Sample material B',quantity:3,unitPriceCents:4900}
+    ]
+  });
+  verifyCheckedQuoteCsv(sample); // independently recalculate cents and bytes.
+  const url=URL.createObjectURL(new Blob([sample.bytes],{type:sample.mimeType}));
+  const link=document.createElement('a');
+  link.href=url;link.download=sample.fileName;
+  document.body.append(link);link.click();link.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),30000);
+});
+
 language.addEventListener('change',()=>setLanguage(language.value));
 $('year').textContent=String(new Date().getFullYear());
 setLanguage(language.value);

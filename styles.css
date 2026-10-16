@@ -9,3 +9,9 @@
 .chat-bottom .chat-footnote{flex:1}
 .chat-reset{border:0;background:transparent;color:#157d70;white-space:nowrap;font-size:11px;font-weight:750;text-decoration:underline;padding:4px}
 @media(max-width:760px){.chat-options{padding-left:16px;padding-right:16px}.chat-options button{font-size:12px}.chat-bottom{align-items:flex-start}}
+
+.work-example{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;background:#f5faf6;border-top:1px solid #e2eee5;flex-wrap:wrap}
+.work-example span{font-size:11px;color:#5a8074}
+.work-example button{border:1px solid #add5c6;border-radius:9px;padding:9px 12px;background:white;color:#116d5e;font-size:12px;font-weight:750;text-align:left}
+.work-example button:hover{background:#e9f8ef}
+@media(max-width:760px){.work-example{padding:11px 15px}.work-example button{font-size:11px}}

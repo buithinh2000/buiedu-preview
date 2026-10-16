@@ -64,3 +64,14 @@ test('Career conversation keeps irrelevant spreadsheet download hidden and bubbl
  assert.match(css,/\.chat-feed>\.chat-turn\{flex-shrink:0\}/);
  assert.match(css,/\.work-example\[hidden\]\{display:none!important\}/);
 });
+
+test('career aspiration opens a visible learning desk rather than only more chat text',()=>{
+ assert.match(html,/id="learningDesk" hidden/);
+ assert.match(html,/id="metricsForm"/);
+ assert.match(html,/id="deskRows"/);
+ assert.match(html,/id="deskScore"/);
+ assert.match(js,/careerDesk\.show\(/);
+ assert.match(js,/careerDesk\.isActive\(\)/);
+ assert.match(css,/\.learning-desk\{/);
+ assert.match(css,/\.desk-map\{/);
+});

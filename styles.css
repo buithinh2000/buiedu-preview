@@ -15,3 +15,9 @@
 .work-example button{border:1px solid #add5c6;border-radius:9px;padding:9px 12px;background:white;color:#116d5e;font-size:12px;font-weight:750;text-align:left}
 .work-example button:hover{background:#e9f8ef}
 @media(max-width:760px){.work-example{padding:11px 15px}.work-example button{font-size:11px}}
+
+/* Keep full messages readable in the scrolling chat; never squash a turn. */
+.chat-feed>.chat-turn{flex-shrink:0}
+.chat-feed{scroll-padding-bottom:16px}
+/* Show worksheet sample only when it is relevant to a spreadsheet conversation. */
+.work-example[hidden]{display:none!important}

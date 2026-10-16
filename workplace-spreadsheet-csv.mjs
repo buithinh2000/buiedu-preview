@@ -72,6 +72,6 @@ export function verifyCheckedQuoteCsv(result){
   sum+=amt;
  }
  if(sum!==BigInt(result.calculatedTotalCents))throw Error('wrong_total');
- if(new TextDecoder().decode(result.bytes)!==result.content)throw Error('artifact_corrupted');
+ if(new TextDecoder('utf-8',{ignoreBOM:true}).decode(result.bytes)!==result.content)throw Error('artifact_corrupted');
  return {verified:true,calculatedTotalCents:Number(sum),rows:result.rows.length};
 }

@@ -11,6 +11,7 @@ const form=$('previewForm');
 const feed=$('chatFeed');
 const starters=$('chatStarters');
 const options=$('chatOptions');
+const workExample=$('workExample');
 const input=$('goal');
 const submit=form.querySelector('button[type="submit"]');
 const api=new CompanionApi({baseUrl:siteConfig.apiBaseUrl,getAccessToken});
@@ -65,6 +66,7 @@ function resetConversation(){
   options.hidden=true;
   options.replaceChildren();
   starters.hidden=false;
+  workExample.hidden=true;
   input.value='';
 }
 
@@ -90,6 +92,7 @@ function showDiscoveryResult(result){
   session=result.state;
   addTurn('assistant',result.reply,{sample:true});
   displayOptions(result.options);
+  workExample.hidden=!(result.state.domain==='work'&&result.state.focus==='excel');
   starters.hidden=true;
 }
 

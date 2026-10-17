@@ -1,4 +1,4 @@
-// BuiEdu public practice sample: browser-local only; CSV, not an XLSX or paid AI result.
+// BuiEdu browser-only checked CSV, no server or paid AI.
 // BuiEdu real, zero-AI-cost Excel-compatible CSV practice artifact.
 // This creates ACTUAL bytes; not an .xlsx and not an AI-generated file.
 // All money is integer cents, totals recalculated independently, formulas never evaluated.
@@ -50,7 +50,7 @@ export function createCheckedQuoteCsv({title='BuiEdu practice quotation',currenc
  ].join('\r\n')+'\r\n';
  return Object.freeze({
   fileName:'buiedu-practice-quotation.csv',mimeType:'text/csv;charset=utf-8',
-  content,bytes:new TextEncoder().encode(content),status:'CREATED',
+  title:name,content,bytes:new TextEncoder().encode(content),status:'CREATED',
   kind:'CSV_EXCEL_COMPATIBLE_NOT_XLSX',currency,
   calculatedTotalCents:Number(total),rows:normalized,
   validation:{arithmeticChecked:true,formulaCellsUsed:false,safeForCSVFormulaInjection:true,
@@ -73,5 +73,22 @@ export function verifyCheckedQuoteCsv(result){
  }
  if(sum!==BigInt(result.calculatedTotalCents))throw Error('wrong_total');
  if(new TextDecoder('utf-8',{ignoreBOM:true}).decode(result.bytes)!==result.content)throw Error('artifact_corrupted');
+ // Cross-check EVERY exported byte against a fresh reconstruction from the
+ // structured source rows; maliciously changed CSV cannot pass by changing
+ // both bytes and content while leaving totals/row metadata intact.
+ let expected;
+ try{
+  expected=createCheckedQuoteCsv({
+   title:result.title,currency:result.currency,
+   items:result.rows.map(row=>({
+    description:row.description,quantity:row.quantity,
+    unitPriceCents:row.unitPriceCents
+   }))
+  });
+ }catch{throw Error('artifact_corrupted')}
+ if(expected.content!==result.content||
+  expected.bytes.length!==result.bytes.length||
+  !expected.bytes.every((value,i)=>value===result.bytes[i]))
+  throw Error('artifact_corrupted');
  return {verified:true,calculatedTotalCents:Number(sum),rows:result.rows.length};
 }

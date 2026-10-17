@@ -1,5 +1,15 @@
 export const copy={
 vi:{
+  quoteLaunch:'Tạo báo giá của riêng bạn ↗',
+  quotePrivacy:'File CSV thật, không gọi AI hay gửi dữ liệu lên máy chủ. Hãy dùng số liệu giả để thử.',
+  quoteBadge:'SẢN PHẨM THẬT · TRONG TRÌNH DUYỆT',
+  quoteHeading:'Tạo báo giá thực hành',
+  quoteState:'CSV ĐÃ KIỂM TRA',
+  quoteDescription:'Sửa số lượng và đơn giá mẫu. Tổng sẽ được kiểm tra trước khi tải. Đây chưa phải AI hội thoại.',
+  quoteName:'Tên báo giá',quoteCurrencyLabel:'Đơn vị tiền',
+  quoteAdd:'+ Thêm hạng mục',quoteTotalLabel:'Tổng đã kiểm tra',
+  quoteExport:'Kiểm tra & tải file CSV thật ↓',
+  quoteDisclaimer:'Thông tin chỉ tồn tại trong phiên trình duyệt này. Hãy tự xác minh giá, thuế, thông tin khách hàng và điều khoản trước khi sử dụng.',
   navHow:'Cách hoạt động',navWhy:'BuiEdu giúp gì?',navTry:'Trải nghiệm',
   heroEyebrow:'AI ĐỒNG HÀNH CÙNG MỤC TIÊU CỦA BẠN',
   heroTitle:'Bạn muốn đạt được điều gì <em>hôm nay?</em>',
@@ -41,6 +51,16 @@ vi:{
   }
 },
 en:{
+  quoteLaunch:'Build your own editable quotation ↗',
+  quotePrivacy:'Real CSV file, no AI call or server upload. Use fictional data to practise.',
+  quoteBadge:'REAL FILE · BROWSER ONLY',
+  quoteHeading:'Build a practice quotation',
+  quoteState:'VERIFIED CSV',
+  quoteDescription:'Edit example quantities and prices. Totals are checked before download. This is not live AI chat.',
+  quoteName:'Quotation title',quoteCurrencyLabel:'Currency',
+  quoteAdd:'+ Add an item',quoteTotalLabel:'Verified total',
+  quoteExport:'Verify & download the real CSV ↓',
+  quoteDisclaimer:'Inputs stay in this browser session. Independently verify prices, taxes, customer details and terms before using with a client.',
   navHow:'How it works',navWhy:'Why BuiEdu?',navTry:'Try preview',
   heroEyebrow:'YOUR GOALS. YOUR AI COMPANION.',
   heroTitle:'What would you like to achieve <em>today?</em>',

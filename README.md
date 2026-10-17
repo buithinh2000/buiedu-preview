@@ -10,6 +10,7 @@ Expected website after a successful Pages deployment: https://buithinh2000.githu
 ## Status
 - Vietnamese/English responsive website
 - Rule-based, browser-only sample plan
+- Real locally-generated, independently revalidated editable CSV quotation (NO model, no backend, no uploads; NOT an .xlsx)
 - **No actual AI agent or sign-in enabled**
 - No customer details, server credentials, tokens, backend code, or private BuiTai Core assets
 

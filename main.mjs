@@ -5,6 +5,7 @@ import {getAccessToken} from './auth.mjs';
 import {beginGoal,continueGoal} from './intent-router.mjs';
 import {createCheckedQuoteCsv,verifyCheckedQuoteCsv} from './workplace-spreadsheet-csv.mjs';
 import {createCareerDesk} from './career-desk-ui.mjs';
+import {createQuoteStudio} from './quote-studio.mjs';
 
 const $=id=>document.getElementById(id);
 const language=$('language');
@@ -14,6 +15,7 @@ const starters=$('chatStarters');
 const options=$('chatOptions');
 const workExample=$('workExample');
 const careerDesk=createCareerDesk(document);
+const quoteStudio=createQuoteStudio(document);
 const input=$('goal');
 const submit=form.querySelector('button[type="submit"]');
 const api=new CompanionApi({baseUrl:siteConfig.apiBaseUrl,getAccessToken});
@@ -76,6 +78,7 @@ function resetConversation(){
 function setLanguage(next){
   const previous=locale;
   locale=next==='en'?'en':'vi';
+  quoteStudio.setLocale(locale);
   const c=copy[locale];
   document.documentElement.lang=locale;
   for(const el of document.querySelectorAll('[data-t]')){
@@ -183,6 +186,7 @@ options.addEventListener('click',event=>{
   showDiscoveryResult(result);
 });
 $('resetChat').addEventListener('click',resetConversation);
+$('openQuoteStudio').addEventListener('click',()=>quoteStudio.open());
 $('downloadCsv').addEventListener('click',()=>{
   // Sample-only, no personal data, no model call, no backend request.
   const sample=createCheckedQuoteCsv({

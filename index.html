@@ -96,6 +96,32 @@
           </div>
           <div class="chat-bottom"><p class="chat-footnote" data-t="privacyNotice">Bản mô phỏng chạy trong trình duyệt. Không nhập thông tin nhạy cảm; nội dung không được lưu hoặc gửi lên máy chủ.</p><button type="button" id="resetChat" class="chat-reset" data-t="resetChat">Bắt đầu lại</button></div>
         </form>
+        <section class="quote-launch" aria-label="Real work practice">
+          <button type="button" id="openQuoteStudio" class="quote-launch-button" data-t="quoteLaunch">Create an editable quotation ↗</button>
+          <p data-t="quotePrivacy">Real CSV file, no AI model or server upload. Use example data only.</p>
+        </section>
+        <section id="quoteStudio" class="quote-studio" hidden aria-labelledby="quoteStudioTitle">
+          <div class="quote-head">
+            <div><span class="quote-eyebrow" data-t="quoteBadge">REAL OUTPUT · BROWSER ONLY</span>
+              <h3 id="quoteStudioTitle" data-t="quoteHeading">Create your practice quotation</h3></div>
+            <span class="quote-state" data-t="quoteState">VERIFIED CSV</span>
+          </div>
+          <p data-t="quoteDescription">Edit the example quantities and prices. The total is checked before you download. This is not an AI conversation.</p>
+          <form id="quoteForm" class="quote-form">
+            <div class="quote-fields">
+              <label><span data-t="quoteName">Quotation title</span><input id="quoteTitle" type="text" maxlength="120" autocomplete="off" required></label>
+              <label><span data-t="quoteCurrencyLabel">Currency</span><select id="quoteCurrency" aria-label="Currency"><option value="AUD">AUD</option><option value="USD">USD</option></select></label>
+            </div>
+            <div id="quoteRows" class="quote-rows"></div>
+            <div class="quote-bottom">
+              <button id="quoteAddRow" type="button" class="quote-add" data-t="quoteAdd">+ Add an item</button>
+              <div class="quote-total"><span data-t="quoteTotalLabel">Verified total</span><output id="quoteTotal">—</output></div>
+            </div>
+            <button id="quoteDownload" type="submit" class="quote-download" data-t="quoteExport" disabled>Verify & download actual CSV ↓</button>
+            <p id="quoteStatus" class="quote-status" role="status" aria-live="polite"></p>
+            <p class="quote-disclaimer" data-t="quoteDisclaimer">Values stay in this browser session. Verify real prices, client information, taxes and terms yourself before use.</p>
+          </form>
+        </section>
       </section>
     </section>
     <section class="band" id="why">

@@ -61,3 +61,44 @@
  .desk-case{padding:10px}.desk-form{gap:5px}
  .desk-actions button{padding:8px 10px}
 }
+
+/* Actual, user-editable quotation work product (never a simulated AI reply). */
+.quote-launch{border-top:1px solid #e6efeb;padding:13px 20px 14px;display:grid;gap:6px;background:linear-gradient(100deg,#eaf7f1,#fffaf2)}
+.quote-launch-button{border:0;border-radius:12px;padding:12px 14px;text-align:left;background:#176e63;color:#fff;font-size:13px;font-weight:800;width:100%}
+.quote-launch-button:hover{background:#0d584f}
+.quote-launch p{margin:0;font-size:11px;color:#5b7972;line-height:1.4}
+.quote-studio{padding:17px 19px 20px;border-top:1px solid #d4e9df;background:#f7fbf7;display:grid;gap:10px}
+.quote-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.quote-eyebrow{font-size:10px;letter-spacing:.075em;color:#237768;font-weight:850}
+.quote-head h3{margin:6px 0 0;font-size:19px;color:#234f46;letter-spacing:-.03em}
+.quote-state{border:1px solid #b4dac5;background:white;color:#237768;border-radius:30px;padding:7px 9px;font-size:9px;font-weight:850;white-space:nowrap}
+.quote-studio>p{margin:0;color:#64817a;font-size:12px;line-height:1.5}
+.quote-form{display:grid;gap:11px}
+.quote-fields{display:grid;grid-template-columns:minmax(0,1fr) 105px;gap:10px}
+.quote-fields label,.quote-row label{display:grid;gap:5px;min-width:0;color:#52726b;font-size:11px;font-weight:750}
+.quote-fields input,.quote-fields select,.quote-row input{width:100%;min-width:0;padding:11px 10px;border:1px solid #c2dacc;border-radius:9px;color:#244b46;background:#fff;font-size:13px}
+.quote-fields input:focus,.quote-row input:focus{border-color:#218a74}
+.quote-rows{display:grid;gap:9px}
+.quote-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(65px,.6fr) minmax(80px,.8fr) auto;gap:7px;align-items:end}
+.quote-remove{border:1px solid #d7dfdb;border-radius:9px;color:#687e77;background:#fff;font-size:11px;font-weight:750;padding:12px 8px}
+.quote-remove:hover{border-color:#df8f87;color:#b84338}
+.quote-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.quote-add{border:1px solid #a2ccbb;background:#fff;color:#146c5e;padding:10px 12px;border-radius:9px;font-size:12px;font-weight:750}
+.quote-add:disabled{opacity:.45;cursor:not-allowed}
+.quote-total{display:grid;gap:3px;text-align:right}
+.quote-total span{font-size:10px;color:#66817a}
+.quote-total output{font-variant-numeric:tabular-nums;font-weight:850;font-size:21px;color:#176e63}
+.quote-download{background:#e0a458;color:#183e39;padding:13px;border:0;border-radius:10px;font-size:13px;font-weight:850}
+.quote-download:hover{background:#f0b96e}
+.quote-download:disabled{opacity:.55;cursor:not-allowed}
+.quote-status{font-size:11px;color:#386e61;margin:0}
+.quote-disclaimer{color:#758a82;font-size:10px;line-height:1.5;margin:0}
+@media(max-width:540px){
+ .quote-studio{padding:14px 12px}
+ .quote-launch{padding:13px}
+ .quote-row{grid-template-columns:minmax(0,1fr) 72px 85px;gap:5px}
+ .quote-row .quote-remove{grid-column:1/-1;padding:7px;justify-self:end}
+ .quote-fields{grid-template-columns:minmax(0,1fr) 90px}
+ .quote-row input{padding:9px 6px;font-size:12px}
+ .quote-head{flex-wrap:wrap}
+}

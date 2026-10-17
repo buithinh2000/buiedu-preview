@@ -36,16 +36,17 @@ jobs:
           node --check workplace-spreadsheet-csv.mjs
           node --check learning-workspace.mjs
           node --check career-desk-ui.mjs
+          node --check quote-studio.mjs
           node --test tests/*.test.mjs
       - name: Prepare public-only site
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p public
-          cp index.html styles.css main.mjs i18n.mjs config.mjs auth.mjs companion-api.mjs guided-discovery.mjs intent-router.mjs workplace-spreadsheet-csv.mjs learning-workspace.mjs career-desk-ui.mjs public/
+          cp index.html styles.css main.mjs i18n.mjs config.mjs auth.mjs companion-api.mjs guided-discovery.mjs intent-router.mjs workplace-spreadsheet-csv.mjs learning-workspace.mjs career-desk-ui.mjs quote-studio.mjs public/
           touch public/.nojekyll
           test -s public/index.html
-          test "$(find public -maxdepth 1 -type f | wc -l)" -eq 13
+          test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

@@ -81,6 +81,7 @@ function reportMarkdown(c,model){
  line.push("- Rủi ro ngoài dự kiến: "+clip(c.experiment?.risks,550));
  line.push("");
  line.push("## Quan sát và kết quả");
+ line.push("Lưu ý: quan sát cải thiện không đồng nghĩa đã xác minh nguyên nhân. Cần kiểm tra thay đổi đồng thời và các giải thích khác.");
  line.push("**"+outcome.headline+".** "+outcome.detail);
  for(const o of r.observed){line.push("- "+o.date+": "+o.value+" "+clip(c.unit,30)+" — "+clip(o.note,300));}
  if(!r.observed.length)line.push("- Chưa có số liệu theo thời gian.");

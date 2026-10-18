@@ -8,6 +8,7 @@ on:
       - '*.mjs'
       - '.github/workflows/pages.yml'
       - 'tests/*.test.mjs'
+      - 'civilization-lab/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -47,6 +48,10 @@ jobs:
           touch public/.nojekyll
           test -s public/index.html
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
+          # Isolated static preview; BuiEdu root and build remain unchanged.
+          mkdir -p public/civilization-lab
+          cp civilization-lab/index.html public/civilization-lab/index.html
+          test -s public/civilization-lab/index.html
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

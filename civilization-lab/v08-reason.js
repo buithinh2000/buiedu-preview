@@ -10,9 +10,23 @@ function questions(atlas,sectorId,focusId){
 function answerValue(a){return a&&["present","absent"].includes(a.signal)?a.signal:"unknown";}
 function recommendNext(list,answers){
  const pending=list.filter(x=>answerValue(answers[x.id])==="unknown");if(!pending.length)return null;
- const active=list.filter(x=>answerValue(answers[x.id])==="present");
- // Prefer the next mechanism connected in the focus' sequence when a signal appears.
- if(active.length){const recent=active[active.length-1];const next=pending.find(x=>x.rank>recent.rank);if(next)return next;}
+ const answered=list.filter(x=>answerValue(answers[x.id])!=="unknown");
+ if(!answered.length)return pending[0];
+ const recent=answered.slice().sort((a,b)=>(Number(answers[b.id]?.answeredAt)||0)-(Number(answers[a.id]?.answeredAt)||0))[0];
+ // Transparent, rule-based follow-up: test connected mechanisms after a signal;
+ // after a negative result, consider competing explanations, not just the next list item.
+ const relations={
+  outcomes:{present:["feedback","incentives","roles"],absent:["context","capacity"]},
+  capacity:{present:["context","roles","resilience"],absent:["feedback","incentives"]},
+  roles:{present:["incentives","feedback","capacity"],absent:["context","relationships"]},
+  incentives:{present:["feedback","relationships","roles"],absent:["context","capacity"]},
+  relationships:{present:["incentives","feedback","resilience"],absent:["capacity","context"]},
+  feedback:{present:["roles","incentives","outcomes"],absent:["context","capacity"]},
+  context:{present:["capacity","resilience","roles"],absent:["feedback","incentives"]},
+  resilience:{present:["capacity","context","relationships"],absent:["feedback","roles"]}
+ };
+ const signal=answerValue(answers[recent.id]);const route=relations[recent.id]?.[signal]||[];
+ for(const id of route){const candidate=pending.find(x=>x.id===id);if(candidate)return candidate;}
  return pending[0];
 }
 function assess({atlas,sectorId,focusId,answers={},goal="",baseline="",safety="unknown",stakeholders="",horizon="12"}){

@@ -87,7 +87,7 @@ $("lever").innerHTML=data.cases.filter(c=>!c.positive).map(c=>'<option value="'+
 if(state.changed&&data.cases.some(c=>c.id===state.changed))$("lever").value=state.changed;
 else state.changed=$("lever").value;
 }
-function getAnswered(){return sectors[state.type].cases.filter(c=>state.answers[c.id]&&state.answers[c.id].freq!=="");}
+function getAnswered(){return sectors[state.type].cases.filter(c=>state.answers[c.id]&&state.answers[c.id].freq!=null&&state.answers[c.id].freq!=="");}
 function getMetrics(){
 var answered=getAnswered(),total=sectors[state.type].cases.length,n=answered.length;
 var negatives=answered.filter(c=>!c.positive),positives=answered.filter(c=>c.positive);
@@ -138,8 +138,8 @@ function renderResult(){var m=getMetrics();summary();renderAdvice(m);}
 function render(){state.type=$("type").value;state.answers={};state.ctx={};state.changed="";$("sectorTitle").textContent="Đánh giá hiện trạng: "+sectors[state.type].name;$("sectorHint").textContent="Chọn tình huống thực tế thay vì tự đoán điểm số. Trả lời Chưa biết nếu chưa có dữ liệu. Mỗi lĩnh vực có bộ câu hỏi và gợi ý riêng.";renderContext();renderCases();renderResult();}
 $("type").value="company";$("type").onchange=render;
 $("lever").onchange=()=>{state.changed=$("lever").value;renderResult();};
-["boost","horizon","start"].forEach(id=>$(id).oninput=()=>{$("boostOut").textContent=$("boost").value+"%";renderResult();});
-$("sample").onclick=()=>{var ids=state.type==="family"?{couple_conflict:2,care_load:2,finance:2,school:1,neuro_support:1,trusted:2,support:1}:{nepotism:2,flattery:2,retaliation:1,cash:2,fairness:1};state.answers={};for(var id of Object.keys(ids))state.answers[id]={freq:String(ids[id]),evidence:1};renderCases();renderResult();$("sampleMsg").textContent="Đã tải dữ liệu GIẢ ĐỊNH để bạn khám phá. Không phải đánh giá một gia đình hoặc tổ chức có thật.";};
+["boost","horizon","start"].forEach(id=>$(id).oninput=()=>{if(Number($("start").value)>Number($("horizon").value))$("start").value="1";$("boostOut").textContent=$("boost").value+"%";renderResult();});
+$("sample").onclick=()=>{var ids=state.type==="family"?{couple_conflict:2,care_load:2,finance:2,school:1,neuro_support:1,trusted:2,support:1}:{nepotism:2,flattery:2,retaliation:1,cash:2,fairness:1};state.answers={};if(state.type!=="family"&&state.type!=="company"){ids={};sectors[state.type].cases.slice(0,4).forEach((c,i)=>ids[c.id]=i===0?2:1);}for(var id of Object.keys(ids))state.answers[id]={freq:String(ids[id]),evidence:1};renderCases();renderResult();$("sampleMsg").textContent="Đã tải dữ liệu GIẢ ĐỊNH để bạn khám phá. Không phải đánh giá một gia đình hoặc tổ chức có thật.";};
 $("clear").onclick=()=>{state.answers={};renderCases();renderResult();$("sampleMsg").textContent="Đã xóa câu trả lời của lĩnh vực này.";};
 function ideas(){var t=state.ideas;$("ideas").innerHTML=t.length?t.map((x,i)=>'<div class="event"><b>'+safe(x.title)+'</b><small> '+safe(x.type)+' · '+safe(x.date)+'</small><p>'+safe(x.text)+'</p><div class="vote"><button data-idx="'+i+'" data-vote="test">Ủng hộ thử nghiệm</button><button data-idx="'+i+'" data-vote="side">Giữ Side Ideas</button><span>'+safe(x.vote||"Chưa biểu quyết")+'</span></div></div>').join(""):'<p class="fine">Chưa có ý tưởng trên thiết bị này.</p>';$("ideas").querySelectorAll("[data-vote]").forEach(btn=>btn.onclick=()=>{state.ideas[Number(btn.dataset.idx)].vote=btn.dataset.vote==="test"?"Ủng hộ thử nghiệm":"Side Ideas";saveIdeas();ideas();});}
 function saveIdeas(){try{localStorage.setItem("civlab_ideas_v06",JSON.stringify(state.ideas));}catch(e){$("ideaMsg").textContent="Trình duyệt không cho lưu cục bộ.";}}

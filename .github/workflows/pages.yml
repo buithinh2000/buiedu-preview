@@ -50,7 +50,7 @@ jobs:
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           # Isolated static preview; BuiEdu root and build remain unchanged.
           mkdir -p public/civilization-lab
-          cp civilization-lab/index.html civilization-lab/legacy-v07.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js civilization-lab/RESEARCH_PROTOCOL_v08.md civilization-lab/v09-preview.html civilization-lab/v09-engine.js civilization-lab/v09-app.js public/civilization-lab/
+          cp civilization-lab/index.html civilization-lab/legacy-v07.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js civilization-lab/RESEARCH_PROTOCOL_v08.md civilization-lab/v09-preview.html civilization-lab/v09-engine.js civilization-lab/v09-app.js civilization-lab/v10-review.js civilization-lab/v10-portfolio.js civilization-lab/v10-workspace.js public/civilization-lab/
           node --check public/civilization-lab/engine-v06.js
           node --check public/civilization-lab/evidence-v07.js
           node --test civilization-lab/model.test.cjs
@@ -61,6 +61,10 @@ jobs:
           node --check civilization-lab/v09-engine.js
           node --check civilization-lab/v09-app.js
           node --test civilization-lab/v09.test.cjs
+          node --check civilization-lab/v10-review.js
+          node --check civilization-lab/v10-portfolio.js
+          node --check civilization-lab/v10-workspace.js
+          node --test civilization-lab/v10.test.cjs
           test -s public/civilization-lab/index.html
           test -s public/civilization-lab/engine-v06.js
           test -s public/civilization-lab/evidence-v07.js
@@ -69,6 +73,10 @@ jobs:
           grep -q "Decision Intelligence Studio" public/civilization-lab/index.html
           test -s public/civilization-lab/v09-engine.js
           test -s public/civilization-lab/v09-app.js
+          test -s public/civilization-lab/v10-workspace.js
+          test -s public/civilization-lab/v10-review.js
+          test -s public/civilization-lab/v10-portfolio.js
+          grep -q "v1.0" public/civilization-lab/index.html
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

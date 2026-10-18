@@ -25,12 +25,17 @@ function startView(){
  '<div class="v11-meta"><label>Vai trò của bạn<select id="v11-role">'+options(roles,s.role)+'</select></label><label>Nhìn lại trong khoảng<select id="v11-period">'+options([["30","30 ngày"],["90","90 ngày"],["365","12 tháng"]],s.period)+'</select></label></div>'+
  '<label class="v11-field">Bạn mong tổ chức trở nên như thế nào? (có thể để trống)<textarea id="v11-goal" rows="2" maxlength="900" placeholder="Ví dụ: phối hợp ổn định hơn, mọi người được lắng nghe, đáp ứng nhu cầu thiết yếu...">'+esc(s.goal)+'</textarea></label>'+
  '<div class="v11-alert"><strong>Cam kết minh bạch:</strong> Đây là phỏng vấn có hướng dẫn, chưa có AI hội thoại hay bằng chứng độc lập. Trình bày rõ cũng không bảo đảm nhận định đúng; hệ thống sẽ hỏi về cả thành công, hạn chế và những góc nhìn khác.</div>'+
- '<div class="v11-actions"><button class="v11-primary" id="v11-begin">Bắt đầu từ tình huống thực tế →</button><button class="v11-minor" id="v11-demo">Điền ví dụ minh họa</button></div>';
+ '<div class="v11-actions"><button class="v11-primary" id="v11-begin">Bắt đầu từ tình huống thực tế →</button><button class="v11-minor" id="v11-demo">Điền ví dụ minh họa</button><label class="v11-upload">Mở bản phỏng vấn JSON<input id="v11-import" type="file" accept=".json,application/json"></label></div>';
  document.querySelectorAll("[data-sector]").forEach(b=>b.onclick=()=>{s.sector=b.dataset.sector;s.answers={};id="";render();});
  $("v11-role").onchange=e=>s.role=e.target.value;
  $("v11-period").onchange=e=>s.period=e.target.value;
  $("v11-goal").oninput=e=>s.goal=e.target.value;
  $("v11-begin").onclick=()=>{id=E.next(s)||scope().order[0];phase="question";render();};
+ $("v11-import").onchange=async e=>{try{
+ const file=e.target.files?.[0];if(!file)return;if(file.size>150000)throw Error("FILE_TOO_LARGE");
+ const data=E.readImport(await file.text());s=data;stepCounter=Math.max(0,...Object.values(s.answers||{}).map(a=>Number(a.at)||0));
+ id=E.next(s)||scope().order[0];phase="question";render();feedback("Đã mở bản phỏng vấn JSON ở trong phiên. Hãy kiểm tra lại các câu trả lời trước khi phân tích.");
+ }catch(err){feedback("Không nhập được file: chỉ hỗ trợ bản phỏng vấn v1.1 hợp lệ và dung lượng nhỏ.",true);}finally{e.target.value="";}};
  $("v11-demo").onclick=()=>{
  s.answers={};s.role="Lãnh đạo / người ra quyết định";s.goal="Hoạt động công bằng hơn và giảm trễ công việc";
  const sector=scope(),o=sector.order;

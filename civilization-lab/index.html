@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0e2431">
 <meta name="description" content="Civilization Lab — nghiên cứu hệ thống, phân tích giả thuyết cạnh tranh và theo dõi kết quả cải thiện thực tế của doanh nghiệp nhỏ.">
-<title>Civilization Lab v1.0 · Decision Intelligence Studio</title>
+<title>Civilization Lab v1.1 · Guided Situation Interview</title>
 <style>
 :root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--bg:#edf3f1;--navy:#102a38;--ink:#193344;--muted:#647985;--line:#dce6e1;--green:#007b71;--teal:#d9f3e8;--white:#fff}
 *{box-sizing:border-box}body{margin:0;line-height:1.52;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8cdec9;outline-offset:2px}a{color:#006d67;text-decoration-thickness:1px}h1,h2,h3{line-height:1.16;letter-spacing:-.035em}h1{font-size:clamp(32px,4.9vw,56px);margin:12px 0}h2{font-size:clamp(23px,2.5vw,31px);margin:4px 0 14px}h3{font-size:19px;margin:8px 0 11px}p{margin:9px 0;color:#485f69}small{color:#6a7f85}.shell{max-width:1440px;margin:auto;padding:0 24px 60px}
@@ -56,14 +56,14 @@
 #v10-report-box textarea{width:100%;min-height:180px;border:1px solid #cbded4;border-radius:8px;padding:8px;background:#fbfdfa;color:#304650;font-size:11px;line-height:1.5;resize:vertical}
 @media(max-width:1150px){.right .v10-audit{display:block}}
 @media(max-width:790px){.v10-portfolio{padding:15px}.v10-heading{display:block}.v10-tag{display:inline-block;margin-top:5px}.caseItem{align-items:flex-start;flex-direction:column}.v10-buttons button,.v10-upload{flex:1;text-align:center}}
-</style>
+</style><link rel="stylesheet" href="./v11-style.css">
 </head>
 <body>
-<header class="masthead"><div class="mastinner"><div class="brand"><span class="logo">∴</span><span>CIVILIZATION LAB<br><span style="font-size:10px;color:#8cc8bd;letter-spacing:.09em">DECISION INTELLIGENCE</span></span></div><div class="header-right"><span class="version">v1.0 · DECISION WORKSPACE</span><a href="./v08-preview.html">Khung nghiên cứu v0.8 ↗</a></div></div></header>
+<header class="masthead"><div class="mastinner"><div class="brand"><span class="logo">∴</span><span>CIVILIZATION LAB<br><span style="font-size:10px;color:#8cc8bd;letter-spacing:.09em">DECISION INTELLIGENCE</span></span></div><div class="header-right"><span class="version">v1.1 · GUIDED INTERVIEW</span><a href="./v08-preview.html">Khung nghiên cứu v0.8 ↗</a></div></div></header>
 <div class="shell">
-<section class="hero"><div><div class="eyebrow">Research · Decide · Test · Learn</div><h1>Từ vấn đề thật<br>đến thay đổi có thể đo được.</h1><p>Thử nghiệm đầu tiên cho doanh nghiệp nhỏ: mô tả hiện trạng → kiểm tra các nguyên nhân cạnh tranh → thử một biện pháp → theo dõi kết quả thực tế. Không tự đoán xác suất và không vẽ dữ liệu tương lai giả.</p></div><div class="hero-aside"><b>Đừng tin ngay một lời giải thích.</b>Quan sát và dữ liệu có thể không đầy đủ. Hệ thống giúp bạn xem các khả năng khác nhau trước khi ra quyết định.</div></section>
-<div class="banner"><span>◈</span><span><b>Giới hạn quan trọng:</b> Bản chạy thử sử dụng tri thức và quy tắc kiểm tra công khai, <b>chưa kết nối mô hình AI ngôn ngữ</b>. Đây không phải bộ máy nhân quả đã được kiểm định hoặc dịch vụ tư vấn tài chính/nhân sự chuyên nghiệp. Dữ liệu chỉ ở phiên trình duyệt trừ khi bạn tự chọn lưu trên thiết bị.</span></div>
-<section id="v10-workspace" class="v10-portfolio" aria-label="Quản lý hồ sơ"></section>
+<section class="hero"><div><div class="eyebrow">Research · Decide · Test · Learn</div><h1>Chưa biết vấn đề ở đâu?<br>Hãy bắt đầu từ những gì đang xảy ra.</h1><p>Civilization Lab giúp mọi người mô tả hiện trạng cụ thể và trung lập: <b>kể sự việc → kiểm tra góc nhìn → tìm cơ chế → xem các kịch bản có điều kiện</b>. Doanh nghiệp có thể chuyển tiếp sang công cụ theo dõi kết quả thực tế.</p></div><div class="hero-aside"><b>Đừng tin ngay một lời giải thích.</b>Quan sát và dữ liệu có thể không đầy đủ. Hệ thống giúp bạn xem các khả năng khác nhau trước khi ra quyết định.</div></section>
+<div class="banner"><span>◈</span><span><b>Giới hạn quan trọng:</b> Bản phỏng vấn có hướng dẫn theo quy tắc nghiên cứu, <b>chưa kết nối AI hội thoại hoặc bộ máy dự báo đã kiểm định</b>. Dữ liệu chưa được xác minh độc lập. Tránh nhập thông tin nhận dạng cá nhân hay trẻ em. Câu trả lời của cuộc phỏng vấn chỉ nằm trong phiên trình duyệt, trừ khi bạn chủ động xuất file.</span></div>
+<section id="v11-interview" class="v11-panel" aria-label="Phỏng vấn đánh giá hiện trạng"></section><div class="v11-studio-links"><span>Doanh nghiệp có thể chuyển tiếp sang công cụ chuyên sâu để theo dõi kết quả thật.</span><button type="button" id="v11-toggle-studio" class="v11-toggle">Mở Business Case Studio v1.0 ↓</button></div><section id="v11-existing-studio" hidden><section id="v10-workspace" class="v10-portfolio" aria-label="Quản lý hồ sơ"></section>
 <div class="layout">
 <aside class="left">
 <div class="panel"><div class="compactHeading">WORKFLOW</div><h3>Hồ sơ và quyết định</h3><div id="stepNav"></div>
@@ -76,7 +76,7 @@
 <div class="source-card"><b>business.gov.au</b><p>Đo năng suất bằng thời gian xử lý, tỷ lệ lỗi và kết quả với khách hàng.</p><a href="https://business.gov.au/planning/innovation/improving-productivity-in-your-business" target="_blank" rel="noopener">Improving productivity ↗</a></div>
 <div class="source-card"><b>Safe Work Australia</b><p>Đánh giá tải công việc, khả năng kiểm soát, mức hỗ trợ và rủi ro tâm lý–xã hội.</p><a href="https://www.safeworkaustralia.gov.au/safety-topic/managing-health-and-safety/mental-health/psychosocial-hazards/job-demands" target="_blank" rel="noopener">Managing job demands ↗</a></div></div>
 </div><section id="v10-audit" class="panel v10-audit" aria-label="Kiểm định bằng chứng"></section></aside>
+</div></section>
+<footer class="footer">Civilization Lab · Prototype v1.1 · Doanh nghiệp nhỏ trước, các lĩnh vực xã hội sau. Mọi dữ kiện do người dùng nhập cần được kiểm chứng độc lập. Không dùng một chiều lời kể để kết luận về cá nhân.</footer>
 </div>
-<footer class="footer">Civilization Lab · Prototype v1.0 · Doanh nghiệp nhỏ trước, các lĩnh vực xã hội sau. Mọi dữ kiện do người dùng nhập cần được kiểm chứng độc lập. Không dùng một chiều lời kể để kết luận về cá nhân.</footer>
-</div>
-<script src="./v09-engine.js" defer></script><script src="./v10-review.js" defer></script><script src="./v10-portfolio.js" defer></script><script src="./v09-app.js" defer></script><script src="./v10-workspace.js" defer></script></body></html>
+<script src="./v09-engine.js" defer></script><script src="./v10-review.js" defer></script><script src="./v10-portfolio.js" defer></script><script src="./v09-app.js" defer></script><script src="./v10-workspace.js" defer></script><script src="./v11-interview.js" defer></script><script src="./v11-ui.js" defer></script><script src="./v11-toggle.js" defer></script></body></html>

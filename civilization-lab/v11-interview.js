@@ -76,7 +76,7 @@ function validAnswer(a){return a&&["works","mixed","difficult","unknown"].includ
 function answered(a){return validAnswer(a)&&a.status!=="unknown";}
 function next(state){
  const sector=sectorOf(state.sector)||SECTORS[0],history=Object.entries(state.answers||{}).filter(([id,a])=>answered(a)&&byId(id));
- const pending=sector.order.filter(id=>!answered(state.answers[id]));
+ const pending=sector.order.filter(id=>!state.answers?.[id]?.at);
  if(!pending.length)return null;
  // Start with high-coverage neutral questions, then follow linked mechanisms if challenge/mixed.
  const last=history.sort((a,b)=>(b[1].at||0)-(a[1].at||0))[0];

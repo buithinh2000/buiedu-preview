@@ -118,6 +118,21 @@ a[0].push(clamp(base+slope*year,0,100));a[1].push(clamp(base+slope*year+gain,0,1
 }
 return a;
 }
+var mechanisms={
+nepotism:["Bổ nhiệm không dựa vào năng lực","Giảm niềm tin về công bằng","Nguy cơ nhân sự giỏi rời đi / hiệu quả quyết định giảm"],
+flattery:["Thưởng cho việc làm hài lòng lãnh đạo","Thông tin xấu ít được báo cáo","Rủi ro quyết định sai và mất khả năng tự sửa lỗi"],
+retaliation:["Phản biện bị trừng phạt","Thông tin bị che giấu","Rủi ro sai lầm kéo dài"],
+cash:["Chi trả không ổn định","Áp lực nhân sự và nhà cung cấp","Nguy cơ ngưng hoạt động"],
+couple_conflict:["Xung đột giữa người chăm sóc","Căng thẳng và giảm khả năng phối hợp","Môi trường sinh hoạt có thể bất ổn hơn"],
+care_load:["Một người gánh quá nhiều trách nhiệm","Mệt mỏi và thiếu thời gian phục hồi","Khả năng chăm sóc và giao tiếp chịu áp lực"],
+finance:["Thiếu tiền cho nhu cầu cơ bản","Căng thẳng về chỗ ở, dinh dưỡng và thời gian","Phúc lợi gia đình có thể bị ảnh hưởng"],
+generations:["Kỳ vọng thế hệ không thống nhất","Bất đồng về quyết định chăm sóc / ranh giới","Gia tăng căng thẳng nếu không có đối thoại an toàn"],
+school:["Trẻ khó đến trường","Có thể liên quan lo âu / bắt nạt / nhu cầu học tập","Nguy cơ xa rời trường học nếu không được hỗ trợ phù hợp"],
+neuro_support:["Môi trường chưa đáp ứng nhu cầu phát triển","Khó tham gia học tập, giao tiếp hoặc sinh hoạt","Cơ hội tham gia và phúc lợi có thể cải thiện nếu hỗ trợ phù hợp"],
+housing:["Chỗ ở thiếu ổn định","Gián đoạn lịch sinh hoạt và học tập","Khó duy trì cảm giác ổn định"],
+bullying:["Bắt nạt hoặc cô lập","Giảm cảm nhận an toàn","Trẻ có thể né tránh môi trường học tập"],
+coercion:["Hành vi kiểm soát hoặc bạo lực","Nguy cơ mất an toàn","Cần hỗ trợ an toàn trước mọi thử nghiệm khác"]
+};
 function renderAdvice(m){
 var content="";
 if(!m.ready){$("outcome").innerHTML='<div class="notice">Hãy trả lời ít nhất 3 tình huống (trong đó có 2 tình huống vấn đề) để tạo kịch bản minh họa. Các câu “Chưa biết” không được mặc định là không có vấn đề.</div>';$("advice").innerHTML='<div class="notice">Chưa đủ bằng chứng để đề xuất ưu tiên. Hãy bắt đầu từ một vài sự kiện có thể xác minh.</div>';$("chart").innerHTML="";return;}
@@ -127,7 +142,18 @@ graph(series,Number($("horizon").value));
 var top=m.risks.slice(0,3);
 content='<h3>Vấn đề cần kiểm tra trước</h3>'+ (top.length?top.map((r,i)=>'<div class="event"><b>'+(i+1)+'. '+safe(r.c.title)+'</b><p>'+safe(r.c.description)+'</p><p><strong>Thử thay đổi:</strong> '+safe(r.c.action)+'</p><small><strong>Kiểm chứng bằng:</strong> '+safe(r.c.measure)+'</small></div>').join(""):'<p>Không có vấn đề đã ghi nhận; cần kiểm tra độ bao phủ bằng chứng.</p>');
 if(sel)content+='<div class="event"><b>Luồng tác động đang thử</b><p>'+safe(sel.title)+' → thay đổi điều kiện liên quan → có thể thay đổi kết quả của tổ chức sau '+safe($("horizon").value)+' năm. Đây mới là một giả thuyết quan hệ nhân quả, không phải mối quan hệ đã được chứng minh.</p><p><b>Thời điểm bắt đầu:</b> năm '+safe($("start").value)+'; <b>cường độ triển khai giả định:</b> '+safe($("boost").value)+'%.</p></div>';
+if(sel&&mechanisms[sel.id]){
+var path=mechanisms[sel.id];
+content+='<div class="event"><b>Bản đồ cơ chế giả định</b><p><strong>1 · Tình huống:</strong> '+safe(path[0])+'</p><p><strong>2 · Tác động trung gian:</strong> '+safe(path[1])+'</p><p><strong>3 · Kết quả có thể:</strong> '+safe(path[2])+'</p><p class="fine">Các mắt xích là giả thuyết cần kiểm tra bằng bằng chứng và đối chứng; không hàm ý hệ quả sẽ xảy ra chắc chắn.</p></div>';
+}
 if(state.type==="family"){
+var contextNotes=[];
+if(state.ctx.area==="Vùng nông thôn / xa dịch vụ")contextNotes.push("Khi ở xa dịch vụ, cần kiểm tra thời gian di chuyển, khả năng hỗ trợ từ xa và chi phí tiếp cận.");
+if(state.ctx.language==="Có rào cản ngôn ngữ")contextNotes.push("Ưu tiên tài liệu, chuyên gia hoặc người hỗ trợ ngôn ngữ mà gia đình có thể hiểu rõ.");
+if(state.ctx.culture==="Có những khác biệt cần thỏa thuận")contextNotes.push("Làm rõ kỳ vọng và ranh giới giữa các thế hệ thay vì gán nguyên nhân cho văn hóa hay vùng miền.");
+if(state.ctx.carers==="Một phụ huynh")contextNotes.push("Xem xét tải chăm sóc thực tế và mạng lưới hỗ trợ, không mặc định gia đình một phụ huynh có kết quả kém hơn.");
+if(state.ctx.childAge==="Chưa có con")contextNotes.push("Không áp dụng suy luận về việc học hoặc sự phát triển của trẻ nếu gia đình hiện chưa có con.");
+if(contextNotes.length)content+='<div class="event"><b>Điều chỉnh theo bối cảnh gia đình</b><ul>'+contextNotes.map(x=>'<li>'+safe(x)+'</li>').join("")+'</ul><p class="fine">Thông tin này thay đổi hướng hỏi và cách hỗ trợ, không tự động làm giảm chỉ số vì xuất thân hay cấu trúc gia đình.</p></div>';
 content+='<div class="notice">Không thể dự đoán chính xác tương lai hoặc tính cách của một đứa trẻ. Tự kỷ là khác biệt phát triển thần kinh, không do cha mẹ nuôi dạy sai; mô hình chỉ xem xét việc đáp ứng nhu cầu hỗ trợ, giao tiếp và tiếp cận dịch vụ.</div>';
 if(m.risks.some(x=>x.c.id==="coercion"&&x.severity>=1))content='<div class="notice warning"><b>Ưu tiên an toàn:</b> Có dấu hiệu bạo lực/kiểm soát được đánh dấu. Đừng dùng mô phỏng để ép hòa giải hay thay thế hỗ trợ chuyên môn. Nếu nguy hiểm tức thời tại Úc, gọi 000; hỗ trợ 1800RESPECT (1800 737 732).</div>'+content;
 if(m.risks.some(x=>x.c.id==="school"))content+='<div class="event"><b>Trẻ khó đến trường</b><p>Đừng vội quy kết là lười hoặc do một người gây ra; hãy kiểm tra lo âu, bắt nạt, rào cản học tập và điều chỉnh phù hợp cùng nhà trường.</p><small><a href="https://www.vic.gov.au/school-refusal-and-anxiety-about-going-school" target="_blank" rel="noopener">Hướng dẫn của Chính phủ Victoria</a></small></div>';

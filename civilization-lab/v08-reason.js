@@ -1,7 +1,7 @@
 (function(root,factory){const api=factory();if(typeof module==="object"&&module.exports)module.exports=api;root.CivReasonV08=api;})(typeof globalThis!=="undefined"?globalThis:this,function(){
 "use strict";
 function safeText(x){return String(x??"").slice(0,1500);}
-function getFocus(atlas,sectorId,focusId){const s=atlas.byId[sectorId];if(!s)throw Error("SECTOR_NOT_FOUND");const f=s.outcomes.find(o=>o.id===focusId)||s.outcomes[0];return {sector:s,focus:f};}
+function getFocus(atlas,sectorId,focusId){const s=atlas.byId[sectorId];if(!s)throw Error("SECTOR_NOT_FOUND");const f=focusId==="__custom"?{id:"__custom",name:"Tình huống tự mô tả",metric:"Chỉ số kết quả do người dùng chọn",dims:atlas.dimensions.map(d=>d.id),goal:"Tìm nguyên nhân có thể kiểm chứng"}:(s.outcomes.find(o=>o.id===focusId)||s.outcomes[0]);return {sector:s,focus:f};}
 function questions(atlas,sectorId,focusId){
  const {sector,focus}=getFocus(atlas,sectorId,focusId);
  const result=focus.dims.map((id,i)=>{const dim=atlas.dimensions.find(d=>d.id===id);const probe=sector.probes[id];return {id,label:dim.label,short:dim.short,color:dim.color,question:probe[0],mechanism:probe[1],action:probe[2],measure:probe[3],rank:i};});

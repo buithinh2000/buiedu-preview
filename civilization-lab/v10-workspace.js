@@ -5,7 +5,7 @@
 "use strict";
 const bridge=window.CivStudioBridgeV09,P=window.CivPortfolioV10,A=window.CivReviewV10;
 if(!bridge||!P||!A){const el=document.getElementById("v10-workspace");if(el)el.textContent="Không tải được chức năng quản lý hồ sơ.";return;}
-const $=id=>document.getElementById(id),clean=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;":"&#39;"}[c]));
+const $=id=>document.getElementById(id),clean=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let activeId=null,showDetails=false,showReport=false;
 function notice(text,error=false){$("v10-message").textContent=text;$("v10-message").style.color=error?"#b44438":"#176e5e";}
 function c(){return bridge.getCase();}

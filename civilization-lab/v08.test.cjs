@@ -36,8 +36,10 @@ test("next question follows focus path and adapts after answers",()=>{
 const q=questions("company","execution");
 const first=engine.recommendNext(q,{});
 assert.equal(first.id,q[0].id);
-const next=engine.recommendNext(q,{[q[0].id]:{signal:"present"}});
-assert.equal(next.id,q[1].id);
+const next=engine.recommendNext(q,{[q[0].id]:{signal:"present",answeredAt:1}});
+assert.equal(next.id,"incentives");
+const rival=engine.recommendNext(q,{[q[0].id]:{signal:"absent",answeredAt:1}});
+assert.equal(rival.id,"context");
 });
 test("safety overrides standard output even with missing data",()=>{
 const x=assess("family","stability",{safety:"yes",answers:{}});

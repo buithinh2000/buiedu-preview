@@ -173,6 +173,15 @@ $("type").value="company";$("type").onchange=render;
 $("lever").onchange=()=>{state.changed=$("lever").value;renderResult();};
 ["outcomeMeasure","targetMeasure"].forEach(id=>$(id).oninput=renderResult);
 ["boost","horizon","start"].forEach(id=>$(id).oninput=()=>{if(Number($("start").value)>Number($("horizon").value))$("start").value="1";$("boostOut").textContent=$("boost").value+"%";renderResult();});
+$("customAdd").onclick=()=>{
+ var title=$("customTitle").value.trim(),desc=$("customDescription").value.trim(),measure=$("customMeasure").value.trim();
+ if(title.length<12||desc.length<30||measure.length<8){$("customMsg").textContent="Cần mô tả có thể quan sát: tiêu đề ít nhất 12 ký tự, dấu hiệu 30 ký tự, chỉ số 8 ký tự.";return;}
+ var id="user_case_"+Date.now(),item={id:id,group:"Vấn đề riêng — cần xác minh",title:title,description:desc,measure:measure,positive:false,action:"Kiểm chứng tình huống với nguồn phù hợp, thử giải pháp an toàn và đo thay đổi trước-sau; chưa tự xác định nguyên nhân."};
+ sectors[state.type].cases.push(item);
+ renderCases();$("lever").value=id;state.changed=id;renderResult();
+ $("customTitle").value="";$("customDescription").value="";$("customMeasure").value="";
+ $("customMsg").textContent="Đã thêm câu hỏi riêng. Chọn tần suất và loại nguồn ở trên; vấn đề này chưa được nghiên cứu hoặc kiểm chứng.";
+};
 $("sample").onclick=()=>{var ids=state.type==="family"?{couple_conflict:2,care_load:2,finance:2,school:1,neuro_support:1,trusted:2,support:1}:{nepotism:2,flattery:2,retaliation:1,cash:2,fairness:1};state.answers={};if(state.type!=="family"&&state.type!=="company"){ids={};sectors[state.type].cases.slice(0,4).forEach((c,i)=>ids[c.id]=i===0?2:1);}for(var id of Object.keys(ids))state.answers[id]={freq:String(ids[id]),evidence:1};renderCases();renderResult();$("sampleMsg").textContent="Đã tải dữ liệu GIẢ ĐỊNH để bạn khám phá. Không phải đánh giá một gia đình hoặc tổ chức có thật.";};
 $("clear").onclick=()=>{state.answers={};renderCases();renderResult();$("sampleMsg").textContent="Đã xóa câu trả lời của lĩnh vực này.";};
 function ideas(){var t=state.ideas;$("ideas").innerHTML=t.length?t.map((x,i)=>'<div class="event"><b>'+safe(x.title)+'</b><small> '+safe(x.type)+' · '+safe(x.date)+'</small><p>'+safe(x.text)+'</p><div class="vote"><button data-idx="'+i+'" data-vote="test">Ủng hộ thử nghiệm</button><button data-idx="'+i+'" data-vote="side">Giữ Side Ideas</button><span>'+safe(x.vote||"Chưa biểu quyết")+'</span></div></div>').join(""):'<p class="fine">Chưa có ý tưởng trên thiết bị này.</p>';$("ideas").querySelectorAll("[data-vote]").forEach(btn=>btn.onclick=()=>{state.ideas[Number(btn.dataset.idx)].vote=btn.dataset.vote==="test"?"Ủng hộ thử nghiệm":"Side Ideas";saveIdeas();ideas();});}

@@ -1,0 +1,1 @@
+(function(){"use strict";const b=document.getElementById("v11-toggle-studio"),s=document.getElementById("v11-existing-studio");if(!b||!s)return;b.onclick=()=>{s.hidden=!s.hidden;b.textContent=s.hidden?"Mở Business Case Studio v1.0 ↓":"Ẩn Business Case Studio ↑";if(!s.hidden)s.scrollIntoView({behavior:"smooth",block:"start"});};})();

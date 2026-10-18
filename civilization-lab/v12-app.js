@@ -66,9 +66,10 @@ function market(){
  $("marketSector").onchange=el=>{marketSector=el.target.value;chosen="";market();};
  root.querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>{chosen=el.dataset.open;market();$("market-detail")?.scrollIntoView({behavior:"smooth",block:"start"});});
  $("goCampaign").onclick=()=>setNav("campaign");
- const modeEl=$("commentMode"),noteEl=$("commentText"),saveEl=$("saveComment");
+ const exportBtn=$("exportDraft");if(exportBtn)exportBtn.onclick=()=>{const d=drafts.find(x=>x.id===chosen);if(d)download("civilization-lab-private-campaign-v12.json",JSON.stringify(d,null,2));};
+ const modeEl=root.querySelector('[data-field="commentKind"]'),noteEl=root.querySelector('[data-field="commentBody"]'),saveEl=$("saveComment");
  if(modeEl&&noteEl&&saveEl)saveEl.onclick=()=>{
-  const data=drafts.find(x=>x.id===chosen),seed=M.caseStudy(chosen);if(!data){$("commentResult").textContent="Bạn đang xem một tình huống minh họa. Đóng góp mẫu chỉ lưu trong phiên hiện tại; trước tiên hãy tạo bản nháp riêng nếu muốn ghi ý tưởng.";return;}
+  const data=drafts.find(x=>x.id===chosen),seed=M.caseStudy(chosen);if(!data){if(!seed)return;const newDraft=M.makeDraft({title:seed.title,sector:seed.sector,summary:seed.summary,desired:seed.outcome,evidence:seed.evidence,otherSide:seed.contrary,proposal:seed.intervention});newDraft.type="private_draft";newDraft.topic="Bản sao minh họa cá nhân";drafts.unshift(newDraft);chosen=newDraft.id;const updated=M.commentary(newDraft,modeEl.value,noteEl.value);drafts[0]=updated;market();$("market-detail")?.scrollIntoView({behavior:"smooth",block:"start"});return;}
   try{const updated=M.commentary(data,modeEl.value,noteEl.value),idx=drafts.findIndex(x=>x.id===chosen);drafts[idx]=updated;market();$("market-detail")?.scrollIntoView({behavior:"smooth",block:"start"});}catch(e){$("commentResult").textContent="Hãy mô tả đóng góp cụ thể ít nhất 15 ký tự."; }
  };
 }

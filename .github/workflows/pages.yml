@@ -50,8 +50,10 @@ jobs:
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           # Isolated static preview; BuiEdu root and build remain unchanged.
           mkdir -p public/civilization-lab
-          cp civilization-lab/index.html public/civilization-lab/index.html
+          cp civilization-lab/index.html civilization-lab/engine-v06.js public/civilization-lab/
+          node --check public/civilization-lab/engine-v06.js
           test -s public/civilization-lab/index.html
+          test -s public/civilization-lab/engine-v06.js
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

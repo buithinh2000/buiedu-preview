@@ -50,7 +50,7 @@ jobs:
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           # Isolated static preview; BuiEdu root and build remain unchanged.
           mkdir -p public/civilization-lab
-          cp civilization-lab/index.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js public/civilization-lab/
+          cp civilization-lab/index.html civilization-lab/legacy-v07.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js civilization-lab/RESEARCH_PROTOCOL_v08.md public/civilization-lab/
           node --check public/civilization-lab/engine-v06.js
           node --check public/civilization-lab/evidence-v07.js
           node --test civilization-lab/model.test.cjs
@@ -61,6 +61,9 @@ jobs:
           test -s public/civilization-lab/index.html
           test -s public/civilization-lab/engine-v06.js
           test -s public/civilization-lab/evidence-v07.js
+          test -s public/civilization-lab/v08-app.js
+          test -s public/civilization-lab/RESEARCH_PROTOCOL_v08.md
+          grep -q "Systems Intelligence Studio" public/civilization-lab/index.html
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

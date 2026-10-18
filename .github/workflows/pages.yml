@@ -66,7 +66,9 @@ jobs:
           test -s public/civilization-lab/evidence-v07.js
           test -s public/civilization-lab/v08-app.js
           test -s public/civilization-lab/RESEARCH_PROTOCOL_v08.md
-          grep -q "Systems Intelligence Studio" public/civilization-lab/index.html
+          grep -q "Decision Intelligence Studio" public/civilization-lab/index.html
+          test -s public/civilization-lab/v09-engine.js
+          test -s public/civilization-lab/v09-app.js
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

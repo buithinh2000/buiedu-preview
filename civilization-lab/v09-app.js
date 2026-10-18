@@ -3,7 +3,7 @@
 "use strict";
 const M=window.CivBizV09;if(!M){document.body.textContent="Không tải được engine.";return;}
 const $=id=>document.getElementById(id);
-const escapeHTML=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;":"&#39;"}[c]));
+const escapeHTML=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const option=(value,label,current)=>'<option value="'+escapeHTML(value)+'"'+(value===current?' selected':'')+'>'+escapeHTML(label)+'</option>';
 const input=(label,id,value,placeholder="",type="text")=>'<label class="field"><span>'+label+'</span><input type="'+type+'" id="'+id+'" value="'+escapeHTML(value??"")+'" placeholder="'+escapeHTML(placeholder)+'"></label>';
 const pill=x=>'<span class="pill">'+escapeHTML(x)+'</span>';

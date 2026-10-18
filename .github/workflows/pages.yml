@@ -50,10 +50,14 @@ jobs:
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           # Isolated static preview; BuiEdu root and build remain unchanged.
           mkdir -p public/civilization-lab
-          cp civilization-lab/index.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js public/civilization-lab/
+          cp civilization-lab/index.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js public/civilization-lab/
           node --check public/civilization-lab/engine-v06.js
           node --check public/civilization-lab/evidence-v07.js
           node --test civilization-lab/model.test.cjs
+          node --check civilization-lab/v08-atlas.js
+          node --check civilization-lab/v08-reason.js
+          node --check civilization-lab/v08-app.js
+          node --test civilization-lab/v08.test.cjs
           test -s public/civilization-lab/index.html
           test -s public/civilization-lab/engine-v06.js
           test -s public/civilization-lab/evidence-v07.js

@@ -74,30 +74,29 @@ return '<div class="context-grid">'+
 '<label>Quy mô<select data-ctx="size"><option>Nhỏ</option><option>Vừa</option><option>Lớn</option></select></label>'+
 '<label>Mức thay đổi môi trường<select data-ctx="market"><option>Chưa rõ</option><option>Ổn định</option><option>Biến động</option></select></label></div>';
 }
-function renderContext(){ $("context").innerHTML=contextHTML(); $("context").querySelectorAll("[data-ctx]").forEach(x=>{if(state.ctx[x.dataset.ctx]!=null)x.value=state.ctx[x.dataset.ctx];x.onchange=()=>{state.ctx[x.dataset.ctx]=x.value;summary();};});}
+Object.keys(sectors).forEach(function(k){sectors[k].cases=sectors[k].cases.concat(CivEvidenceV07.extraFor(k));});
+function renderContext(){ $("context").innerHTML=contextHTML(); $("context").querySelectorAll("[data-ctx]").forEach(x=>{if(state.ctx[x.dataset.ctx]!=null)x.value=state.ctx[x.dataset.ctx];x.onchange=()=>{state.ctx[x.dataset.ctx]=x.value;renderResult();};});}
 function renderCases(){
 var data=sectors[state.type];var groups=[...new Set(data.cases.map(c=>c.group))];
 $("questions").innerHTML=groups.map(group=>'<div class="qgroup"><h3>'+safe(group)+'</h3>'+data.cases.filter(c=>c.group===group).map(c=>{
-var a=state.answers[c.id]||{};return '<article class="question" data-id="'+c.id+'"><div class="qtitle">'+safe(c.title)+(c.positive?' <span class="positive">Yếu tố bảo vệ</span>':'')+'</div><p>'+safe(c.description)+'</p><div class="qcontrols"><label>Mức xảy ra<select data-frequency="'+c.id+'"><option value="">Chưa biết / thiếu dữ liệu</option><option value="0">Không xảy ra / chưa có</option><option value="1">Có, ít khi</option><option value="2">Lặp lại nhiều lần</option><option value="3">Thường xuyên / kéo dài</option></select></label><label>Loại bằng chứng<select data-evidence="'+c.id+'"><option value="0">Nhận định chưa kiểm chứng</option><option value="1">Quan sát / trải nghiệm một phía</option><option value="2">Có tài liệu hoặc dữ liệu</option><option value="3">Nhiều nguồn hoặc bên liên quan</option></select></label></div><details><summary>Ghi chú / dữ kiện thực tế (không nhập tên cá nhân)</summary><textarea maxlength="600" data-note="'+c.id+'" placeholder="Thời điểm, sự kiện và dữ liệu có thể kiểm tra — tránh thông tin định danh.">'+safe(a.note||"")+'</textarea></details></article>';
+var a=state.answers[c.id]||{};return '<article class="question" data-id="'+c.id+'"><div class="qtitle">'+safe(c.title)+(c.positive?' <span class="positive">Yếu tố bảo vệ</span>':'')+'</div><p>'+safe(c.description)+'</p><div class="qcontrols"><label>Mức xảy ra<select data-frequency="'+c.id+'"><option value="">Chưa biết / thiếu dữ liệu</option><option value="0">Không xảy ra / chưa có</option><option value="1">Có, ít khi</option><option value="2">Lặp lại nhiều lần</option><option value="3">Thường xuyên / kéo dài</option></select></label><label>Loại bằng chứng<select data-evidence="'+c.id+'"><option value="0">Nhận định chưa kiểm chứng</option><option value="1">Quan sát / trải nghiệm một phía</option><option value="2">Có tài liệu hoặc dữ liệu</option><option value="3">Nhiều nguồn hoặc bên liên quan</option></select></label></div><div class="qcontrols advanced"><label>Mức ảnh hưởng nếu có<select data-impact="'+c.id+'"><option value="1">Nhẹ / giới hạn</option><option value="2">Đáng kể</option><option value="3">Nghiêm trọng</option></select></label><label>Thời gian tồn tại<select data-duration="'+c.id+'"><option value="1">Mới / ngắn hạn</option><option value="2">Kéo dài nhiều tuần/tháng</option><option value="3">Kéo dài nhiều tháng/năm</option></select></label></div><label style="margin-top:8px">Nguồn quan sát<select data-voice="'+c.id+'"><option value="">Chưa rõ</option><option value="leader">Người phụ trách / tự đánh giá</option><option value="affected">Người chịu ảnh hưởng</option><option value="third">Người quan sát độc lập</option><option value="multi">Nhiều bên (tự khai)</option></select></label><details><summary>Ghi chú / dữ kiện thực tế (không nhập tên cá nhân)</summary><textarea maxlength="600" data-note="'+c.id+'" placeholder="Thời điểm, sự kiện và dữ liệu có thể kiểm tra — tránh thông tin định danh.">'+safe(a.note||"")+'</textarea></details></article>';
 }).join("")+'</div>').join("");
 $("questions").querySelectorAll("[data-frequency]").forEach(x=>{x.value=(state.answers[x.dataset.frequency]||{}).freq??"";x.onchange=()=>{var a=state.answers[x.dataset.frequency]||{};a.freq=x.value;state.answers[x.dataset.frequency]=a;renderResult();};});
 $("questions").querySelectorAll("[data-evidence]").forEach(x=>{x.value=String((state.answers[x.dataset.evidence]||{}).evidence??0);x.onchange=()=>{var a=state.answers[x.dataset.evidence]||{};a.evidence=Number(x.value);state.answers[x.dataset.evidence]=a;renderResult();};});
+["impact","duration","voice"].forEach(function(k){$("questions").querySelectorAll("[data-"+k+"]").forEach(function(x){var id=x.dataset[k],a=state.answers[id]||{};x.value=a[k]??(k==="voice"?"":"1");x.onchange=function(){var next=state.answers[id]||{};next[k]=k==="voice"?x.value:Number(x.value);state.answers[id]=next;renderResult();};});});
 $("questions").querySelectorAll("[data-note]").forEach(x=>{x.oninput=()=>{var a=state.answers[x.dataset.note]||{};a.note=x.value;state.answers[x.dataset.note]=a;};});
 $("lever").innerHTML=data.cases.filter(c=>!c.positive).map(c=>'<option value="'+c.id+'">'+safe(c.title)+'</option>').join("");
 if(state.changed&&data.cases.some(c=>c.id===state.changed))$("lever").value=state.changed;
 else state.changed=$("lever").value;
 }
 function getAnswered(){return sectors[state.type].cases.filter(c=>state.answers[c.id]&&state.answers[c.id].freq!=null&&state.answers[c.id].freq!=="");}
-function getMetrics(){
-var answered=getAnswered(),total=sectors[state.type].cases.length,n=answered.length;
-var negatives=answered.filter(c=>!c.positive),positives=answered.filter(c=>c.positive);
-var risk=negatives.length?negatives.reduce((s,c)=>s+Number(state.answers[c.id].freq),0)/(3*negatives.length):null;
-var support=positives.length?positives.reduce((s,c)=>s+Number(state.answers[c.id].freq),0)/(3*positives.length):null;
-var observed=answered.filter(c=>Number(state.answers[c.id].evidence)>=2).length;
-var risks=negatives.map(c=>({c:c,severity:Number(state.answers[c.id].freq),evidence:Number(state.answers[c.id].evidence)||0})).filter(x=>x.severity>0).sort((a,b)=>b.severity-a.severity||b.evidence-a.evidence);
-return {answered,total,n,risk,support,observed,risks,ready:n>=3&&negatives.length>=2};
+function getMetrics(){return CivEvidenceV07.assess(sectors[state.type].cases,state.answers,state.type);}
+function summary(){
+ var d=getMetrics();
+ $("coverage").textContent=d.knownCount+" / "+d.total+" tiêu chí";
+ $("evidenceCount").textContent=d.sources+" mục được khai có dữ liệu";
+ $("mainRisk").textContent=d.risks[0]?d.risks[0].c.title:"Chưa thấy tín hiệu ưu tiên / còn thiếu dữ liệu";
 }
-function summary(){var d=getMetrics();$("coverage").textContent=d.n+" / "+d.total+" tình huống đã đánh giá";$("evidenceCount").textContent=d.observed+" tình huống có tài liệu / nhiều nguồn";$("mainRisk").textContent=d.risks[0]?d.risks[0].c.title:"Chưa có dữ liệu để xác định";}
 function graph(series,horizon){
 var svg=$("chart"),L=42,R=18,T=20,B=35,W=740,H=260;
 var X=i=>L+i*(W-L-R)/horizon,Y=y=>T+(100-y)*(H-T-B)/100;
@@ -134,31 +133,39 @@ bullying:["Bắt nạt hoặc cô lập","Giảm cảm nhận an toàn","Trẻ c
 coercion:["Hành vi kiểm soát hoặc bạo lực","Nguy cơ mất an toàn","Cần hỗ trợ an toàn trước mọi thử nghiệm khác"]
 };
 function renderAdvice(m){
-var content="";
-if(!m.ready){$("outcome").innerHTML='<div class="notice">Hãy trả lời ít nhất 3 tình huống (trong đó có 2 tình huống vấn đề) để tạo kịch bản minh họa. Các câu “Chưa biết” không được mặc định là không có vấn đề.</div>';$("advice").innerHTML='<div class="notice">Chưa đủ bằng chứng để đề xuất ưu tiên. Hãy bắt đầu từ một vài sự kiện có thể xác minh.</div>';$("chart").innerHTML="";return;}
-var series=simulate(m),last=series.map(a=>a[a.length-1]),sel=sectors[state.type].cases.find(c=>c.id===$("lever").value);
-$("outcome").innerHTML='<div class="kpis"><div class="kpi"><small>Giữ nguyên</small><strong>'+last[0].toFixed(1)+'</strong><small>Chỉ số giả lập</small></div><div class="kpi"><small>Thay đổi đã chọn</small><strong>'+last[1].toFixed(1)+'</strong><small>Chỉ số giả lập</small></div><div class="kpi"><small>Thêm hỗ trợ</small><strong>'+last[2].toFixed(1)+'</strong><small>Chỉ số giả lập</small></div></div><p class="fine">Đây là thang giả định dùng để so sánh kịch bản, KHÔNG phải xác suất, chẩn đoán hay thang đo đã được hiệu chuẩn. Chỉ báo hiện trạng dựa trên '+m.n+'/'+m.total+' tình huống, trong đó '+m.observed+' tình huống có dữ kiện/tài liệu.</p>';
-graph(series,Number($("horizon").value));
-var top=m.risks.slice(0,3);
-content='<h3>Vấn đề cần kiểm tra trước</h3>'+ (top.length?top.map((r,i)=>'<div class="event"><b>'+(i+1)+'. '+safe(r.c.title)+'</b><p>'+safe(r.c.description)+'</p><p><strong>Thử thay đổi:</strong> '+safe(r.c.action)+'</p><small><strong>Kiểm chứng bằng:</strong> '+safe(r.c.measure)+'</small></div>').join(""):'<p>Không có vấn đề đã ghi nhận; cần kiểm tra độ bao phủ bằng chứng.</p>');
-if(sel)content+='<div class="event"><b>Luồng tác động đang thử</b><p>'+safe(sel.title)+' → thay đổi điều kiện liên quan → có thể thay đổi kết quả của tổ chức sau '+safe($("horizon").value)+' năm. Đây mới là một giả thuyết quan hệ nhân quả, không phải mối quan hệ đã được chứng minh.</p><p><b>Thời điểm bắt đầu:</b> năm '+safe($("start").value)+'; <b>cường độ triển khai giả định:</b> '+safe($("boost").value)+'%.</p></div>';
-if(sel&&mechanisms[sel.id]){
-var path=mechanisms[sel.id];
-content+='<div class="event"><b>Bản đồ cơ chế giả định</b><p><strong>1 · Tình huống:</strong> '+safe(path[0])+'</p><p><strong>2 · Tác động trung gian:</strong> '+safe(path[1])+'</p><p><strong>3 · Kết quả có thể:</strong> '+safe(path[2])+'</p><p class="fine">Các mắt xích là giả thuyết cần kiểm tra bằng bằng chứng và đối chứng; không hàm ý hệ quả sẽ xảy ra chắc chắn.</p></div>';
-}
-if(state.type==="family"){
-var contextNotes=[];
-if(state.ctx.area==="Vùng nông thôn / xa dịch vụ")contextNotes.push("Khi ở xa dịch vụ, cần kiểm tra thời gian di chuyển, khả năng hỗ trợ từ xa và chi phí tiếp cận.");
-if(state.ctx.language==="Có rào cản ngôn ngữ")contextNotes.push("Ưu tiên tài liệu, chuyên gia hoặc người hỗ trợ ngôn ngữ mà gia đình có thể hiểu rõ.");
-if(state.ctx.culture==="Có những khác biệt cần thỏa thuận")contextNotes.push("Làm rõ kỳ vọng và ranh giới giữa các thế hệ thay vì gán nguyên nhân cho văn hóa hay vùng miền.");
-if(state.ctx.carers==="Một phụ huynh")contextNotes.push("Xem xét tải chăm sóc thực tế và mạng lưới hỗ trợ, không mặc định gia đình một phụ huynh có kết quả kém hơn.");
-if(state.ctx.childAge==="Chưa có con")contextNotes.push("Không áp dụng suy luận về việc học hoặc sự phát triển của trẻ nếu gia đình hiện chưa có con.");
-if(contextNotes.length)content+='<div class="event"><b>Điều chỉnh theo bối cảnh gia đình</b><ul>'+contextNotes.map(x=>'<li>'+safe(x)+'</li>').join("")+'</ul><p class="fine">Thông tin này thay đổi hướng hỏi và cách hỗ trợ, không tự động làm giảm chỉ số vì xuất thân hay cấu trúc gia đình.</p></div>';
-content+='<div class="notice">Không thể dự đoán chính xác tương lai hoặc tính cách của một đứa trẻ. Tự kỷ là khác biệt phát triển thần kinh, không do cha mẹ nuôi dạy sai; mô hình chỉ xem xét việc đáp ứng nhu cầu hỗ trợ, giao tiếp và tiếp cận dịch vụ.</div>';
-if(m.risks.some(x=>x.c.id==="coercion"&&x.severity>=1))content='<div class="notice warning"><b>Ưu tiên an toàn:</b> Có dấu hiệu bạo lực/kiểm soát được đánh dấu. Đừng dùng mô phỏng để ép hòa giải hay thay thế hỗ trợ chuyên môn. Nếu nguy hiểm tức thời tại Úc, gọi 000; hỗ trợ 1800RESPECT (1800 737 732).</div>'+content;
-if(m.risks.some(x=>x.c.id==="school"))content+='<div class="event"><b>Trẻ khó đến trường</b><p>Đừng vội quy kết là lười hoặc do một người gây ra; hãy kiểm tra lo âu, bắt nạt, rào cản học tập và điều chỉnh phù hợp cùng nhà trường.</p><small><a href="https://www.vic.gov.au/school-refusal-and-anxiety-about-going-school" target="_blank" rel="noopener">Hướng dẫn của Chính phủ Victoria</a></small></div>';
-}
-$("advice").innerHTML=content;
+ var focus=sectors[state.type].cases.find(function(q){return q.id===$("lever").value;});
+ var relevant=m.risks.slice(0,4);
+ var ctx=state.ctx||{},hasGoal=$("outcomeMeasure")?$("outcomeMeasure").value.trim():"";
+ var target=$("targetMeasure")?$("targetMeasure").value.trim():"";
+ var scenario=CivEvidenceV07.scenarios(focus,$("horizon").value,$("start").value,$("boost").value,hasGoal,target);
+ $("chart").innerHTML="";
+ var note=document.getElementById("numericNotice");if(note)note.textContent="Các đường điểm số dự báo đã được loại bỏ vì chưa có hệ số được hiệu chuẩn bằng dữ liệu thực.";
+ var summaryHtml='<div class="notice"><b>'+safe(m.label)+'</b> · '+m.knownCount+'/'+m.total+' chủ đề được trả lời. '+m.sources+' mục được người dùng khai có dữ liệu. '+m.voices.length+' loại góc nhìn. Đây là đánh giá phạm vi, không phải điểm tốt–xấu.</div>';
+ if(m.safety){
+ summaryHtml='<div class="notice warning"><b>Ưu tiên an toàn trước mô phỏng.</b> Có dấu hiệu liên quan an toàn được báo cáo: '+safe(m.safety.c.title)+'. Đây chưa phải xác nhận sự việc. Cần xem xét an toàn của người chịu ảnh hưởng và tiếp cận chuyên gia phù hợp; không khuyến khích tự giải quyết vấn đề bạo lực bằng thử nghiệm nhóm.</div>'+summaryHtml;
+ }
+ if(!m.usable){
+ $("outcome").innerHTML=summaryHtml+'<p class="fine">Chưa đủ thông tin để lập kịch bản có ý nghĩa. Hãy đánh giá ít nhất 3 mục, gồm tối thiểu một vấn đề cụ thể và một yếu tố bảo vệ (nếu có).</p>';
+ $("advice").innerHTML='<div class="event"><b>Điều nên tìm hiểu trước</b><ul>'+m.missing.concat(m.contextNeeded.slice(0,2)).map(function(t){return '<li>'+safe(t)+'</li>';}).join("")+'</ul></div>';
+ return;
+ }
+ $("outcome").innerHTML=summaryHtml+'<div class="scenario-grid">'+scenario.map(function(item){return '<div class="scenario"><b>'+safe(item.title)+'</b><p>'+safe(item.body)+'</p></div>';}).join("")+'</div><p class="fine">Ba luồng là giả thuyết có điều kiện, không phải xác suất hay dự báo đã được xác nhận. Mốc thời gian dùng để lập kế hoạch theo dõi, không xác định tương lai.</p>';
+ var missing='<div class="event"><b>Điểm mù cần kiểm tra</b><ul>'+m.missing.concat(m.contextNeeded.slice(0,2)).map(function(t){return '<li>'+safe(t)+'</li>';}).join("")+'</ul></div>';
+ var priority='<h3>Vấn đề cần khảo sát, sắp xếp theo mức xuất hiện × ảnh hưởng × thời gian</h3>';
+ priority+= relevant.length?relevant.map(function(v,i){
+ var origin=v.evidence>=2?"Có dữ liệu được người dùng tự khai (chưa kiểm chứng)":"Chưa có dữ liệu độc lập";
+ return '<div class="event"><b>'+(i+1)+'. '+safe(v.c.title)+'</b><p>'+safe(v.c.description)+'</p><p><b>Bước thử:</b> '+safe(v.c.action)+'</p><small><b>Kiểm tra bằng:</b> '+safe(v.c.measure)+' · '+safe(origin)+'</small></div>';
+ }).join(""):'<p class="fine">Chưa có vấn đề được ghi nhận ở các mục đã đánh giá; không có nghĩa là tổ chức không có vấn đề.</p>';
+ var causal=focus?'<div class="event"><b>Giả thuyết cần kiểm chứng</b><p><b>Điều thay đổi:</b> '+safe(focus.action)+'</p><p><b>Giả thuyết:</b> nếu can thiệp làm thay đổi tình huống '+safe(focus.title)+' thì chỉ số '+safe(hasGoal||focus.measure)+' có thể thay đổi. Cần ghi nhận đường cơ sở, thời điểm thực hiện và các tác động đồng thời.</p><p><b>Thử nghiệm an toàn:</b> đo hiện trạng → thử quy mô nhỏ → đo lại → lấy phản hồi → điều chỉnh hoặc dừng nếu có tác hại.</p></div>':"";
+ var family='';
+ if(state.type==="family"){
+ family='<div class="notice">Gia đình được nhìn nhận theo các yếu tố tương tác và nguồn lực bảo vệ, không gán lỗi cho cha mẹ từ một dấu hiệu đơn lẻ. Tự kỷ không phải do cách nuôi dạy gây ra; hãy tập trung vào nhu cầu hỗ trợ thực tế.</div>';
+ if(ctx.language==="Có rào cản ngôn ngữ")family+='<p>Hãy kiểm tra khả năng tiếp cận hỗ trợ bằng ngôn ngữ người nhà hiểu.</p>';
+ if(ctx.area==="Vùng nông thôn / xa dịch vụ")family+='<p>Hãy tính thêm khoảng cách dịch vụ và lựa chọn hỗ trợ từ xa.</p>';
+ if(ctx.childAge==="Chưa có con")family+='<p>Không áp dụng giả định về phát triển của trẻ khi gia đình chưa có con.</p>';
+ if(m.risks.some(function(v){return v.c.id==="school";}))family+='<p class="fine">Với khó khăn đến trường: cần xem xét an toàn, nhu cầu học tập, sự lo âu, quan hệ bạn bè và môi trường trường học thay vì mặc định trẻ “không chịu học”.</p>';
+ }
+ $("advice").innerHTML=(m.safety?'<div class="notice warning">Với tình huống nguy hiểm khẩn cấp tại Úc, gọi 000. Nếu liên quan bạo lực gia đình: 1800RESPECT — 1800 737 732.</div>':"")+priority+missing+causal+family;
 }
 function renderResult(){var m=getMetrics();summary();renderAdvice(m);}
 function render(){state.type=$("type").value;state.answers={};state.ctx={};state.changed="";$("sectorTitle").textContent="Đánh giá hiện trạng: "+sectors[state.type].name;$("sectorHint").textContent="Chọn tình huống thực tế thay vì tự đoán điểm số. Trả lời Chưa biết nếu chưa có dữ liệu. Mỗi lĩnh vực có bộ câu hỏi và gợi ý riêng.";renderContext();renderCases();renderResult();}

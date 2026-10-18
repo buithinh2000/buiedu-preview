@@ -5,7 +5,7 @@ const E=window.CivInterviewV11;const bridge=window.CivStudioBridgeV09;
 const root=document.getElementById("v11-interview");
 if(!E||!root){return;}
 const $=id=>document.getElementById(id);
-const esc=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;',"'" :"&#39;"}[c]));
+const esc=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>{switch(c){case "&":return "&amp;";case "<":return "&lt;";case ">":return "&gt;";case '"':return "&quot;";default:return "&#39;";}});
 const options=(vals,value)=>vals.map(v=>'<option value="'+esc(v[0])+'"'+(v[0]===value?" selected":"")+'>'+esc(v[1])+'</option>').join("");
 const roles=[["","Chọn vai trò (không cần tên)"],["Lãnh đạo / người ra quyết định","Lãnh đạo / người ra quyết định"],["Thành viên / người lao động","Thành viên / người lao động"],["Người chăm sóc / phụ huynh","Người chăm sóc / phụ huynh"],["Người được phục vụ / người chịu ảnh hưởng","Người được phục vụ / người chịu ảnh hưởng"],["Người quan sát","Người quan sát"],["Khác","Khác"]];
 let s=E.create(),phase="start",id="",stepCounter=0,reportTab="outcome";

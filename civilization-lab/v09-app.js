@@ -129,6 +129,7 @@ function renderResults(){
 }
 function render(){
  navRender();if(step==="describe")renderDescribe();if(step==="investigate")renderInvestigate();if(step==="trial")renderTrial();if(step==="results")renderResults();
+ if(window.CivStudioBridgeV09)window.dispatchEvent(new Event("civlab:case-render"));
 }
 $("exportJSON").onclick=()=>{download("civilization-lab-case-v09.json",JSON.stringify({...c,exportNote:"Locally entered, unverified observations; share only with consent."},null,2),"application/json");setStatus("Đã tạo file JSON. Hãy kiểm tra dữ liệu trước khi chia sẻ.");};
 $("exportCSV").onclick=()=>{download("civilization-lab-results-v09.csv",M.csv(c),"text/csv;charset=utf-8");setStatus("Đã xuất dữ liệu đo thực tế ra CSV.");};
@@ -137,5 +138,13 @@ $("loadLocal").onclick=()=>{try{const raw=localStorage.getItem("civilization_lab
 $("importJSON").onchange=async e=>{try{const file=e.target.files[0];if(!file)return;if(file.size>1200000)throw Error("TOO_LARGE");c=M.validateImport(JSON.parse(await file.text()));chosenHyp=c.hypothesisId||"";demo=false;go("describe");setStatus("Đã nhập hồ sơ. Hãy kiểm tra nội dung trước khi dùng.");}catch(err){setStatus("Không thể nhập file: chỉ chấp nhận JSON hồ sơ v0.9 hợp lệ.",true);}finally{e.target.value="";}};
 $("reset").onclick=()=>{if(!confirm("Xóa hồ sơ đang làm trong phiên? Bản đã lưu trên trình duyệt không tự bị xóa."))return;c=blank();chosenHyp="";step="describe";demo=false;render();setStatus("Đã bắt đầu hồ sơ mới.");};
 $("deleteLocal").onclick=()=>{if(confirm("Xóa hồ sơ Civilization Lab v0.9 đã lưu trên trình duyệt này?")){localStorage.removeItem("civilization_lab_v09_optin");setStatus("Đã xóa bản lưu cục bộ v0.9.");}};
+window.CivStudioBridgeV09={
+ getCase:()=>JSON.parse(JSON.stringify(c)),
+ setCase:caseFile=>{c=M.validateImport(caseFile);chosenHyp=c.hypothesisId||"";demo=false;step="describe";render();},
+ newCase:()=>{c=blank();chosenHyp="";demo=false;step="describe";render();},
+ stepTo:key=>{if(!nav.includes(key))throw Error("INVALID_STEP");go(key);},
+ model:M,
+ getStage:()=>step
+};
 render();
 })();

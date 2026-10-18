@@ -60,7 +60,7 @@ function reportMarkdown(c,model){
  const line=[];
  line.push("# Civilization Lab — Báo cáo rà soát quyết định");
  line.push("");
- line.push("**Cảnh báo phương pháp:** Báo cáo dựa trên dữ liệu do người dùng tự khai. Không phải kết luận nhân quả, xác minh độc lập, tư vấn pháp lý/tài chính hay dự báo đã kiểm định.");
+ line.push("**Cảnh báo phương pháp:** Báo cáo dựa trên dữ liệu do người dùng tự khai, không phải kết luận nhân quả, xác minh độc lập, tư vấn pháp lý/tài chính hay dự báo đã kiểm định.");
  line.push("");
  line.push("## Hồ sơ");
  line.push("- Vấn đề: "+clip(c.title,150));

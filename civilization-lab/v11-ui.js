@@ -48,7 +48,7 @@ function saveQuestion(){
  const alt=$("v11-counter");if(alt)ans.alternative=alt.value.trim().slice(0,500);
  const source=$("v11-source");if(source)ans.source=source.value;
  const voice=$("v11-voice");if(voice)ans.voice=voice.value;
- if(ans.status!=="unknown")ans.at=++stepCounter;
+ ans.at=++stepCounter;
  s.answers[id]=ans;
 }
 function questionView(){

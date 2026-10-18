@@ -66,7 +66,7 @@ function renderDiscover(){
  let support='<div class="hypothesis"><h3>'+esc(q.label)+'</h3><p><b>Nếu được quan sát:</b> '+esc(q.mechanism)+'</p><p><b>Hướng thử thay đổi:</b> '+esc(q.action)+'</p><p><b>Cần đo:</b> '+esc(q.measure)+'</p><p class="small">Một quan sát không chứng minh nhân quả. Cần kiểm tra các giải thích khác và dấu hiệu có thể bác bỏ.</p></div>';
  $("stageArea").innerHTML=panel("",t)+panel(head("Cơ chế đang được xem xét","Giả thuyết chứ không phải cáo buộc","Các cơ chế được chọn vì liên quan đến kết quả cần cải thiện."),support);
  document.querySelectorAll("[data-q]").forEach(el=>el.onclick=()=>{s.questionId=el.dataset.q;render();});
- document.querySelectorAll("[data-signal]").forEach(el=>el.onclick=()=>{if(el.dataset.signal==="unknown")delete s.answers[q.id];else s.answers[q.id]={...(s.answers[q.id]||{}),signal:el.dataset.signal};render();});
+ document.querySelectorAll("[data-signal]").forEach(el=>el.onclick=()=>{if(el.dataset.signal==="unknown")delete s.answers[q.id];else s.answers[q.id]={...(s.answers[q.id]||{}),signal:el.dataset.signal,answeredAt:Date.now()};render();});
  ["source","perspective","time","note"].forEach(k=>{const el=$(k);if(el)el.onchange=()=>{s.answers[q.id]={...(s.answers[q.id]||{}),[k]:el.value};aside();};});
  $("nextQ").onclick=()=>{const next=R.recommendNext(qs,s.answers);if(next&&next.id!==q.id){s.questionId=next.id;render();}else if(next){const alternative=qs.find(x=>x.id!==q.id&&R.answerValue(s.answers[x.id])==="unknown");if(alternative){s.questionId=alternative.id;render();}else go("explore");}else go("explore");};
  $("toResults").onclick=()=>go("explore");

@@ -1,0 +1,35 @@
+/* Civilization Lab v1.3 — Private dossiers and conditional scenarios */
+.app-nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+.v13-shell .btn-row{margin:16px 0}
+.v13-titlebar{display:flex;align-items:start;justify-content:space-between;gap:16px}
+.v13-titlebar h2{font-size:22px;margin:4px 0}
+.v13-titlebar p{font-size:11px}
+.v13-records{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.v13-record{border:1px solid #d6e6da;border-radius:11px;background:#f9fcfa;text-align:left;padding:14px;display:flex;flex-direction:column;gap:7px;min-height:113px;color:#34525b}
+.v13-record small{font-size:9px;font-weight:800;letter-spacing:.05em;color:#0e776c}
+.v13-record b{font-size:13px;overflow-wrap:anywhere}
+.v13-record span{font-size:10px;margin-top:auto;color:#69817a}
+.v13-record.active{border:2px solid #038577;background:#ebf9ef;padding:13px}
+.v13-status{margin:10px 0}
+.v13-evidence{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid #e4ece7;padding:13px 0}
+.v13-evidence b{font-size:12px;color:#326358}
+.v13-evidence p{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0}
+.v13-evidence small{font-size:10px;color:#728784}
+.v13-smallbutton{border:1px solid #d6e7dc;background:#f6fbf7;border-radius:7px;padding:7px 9px;font-size:10px;font-weight:750;color:#3c7065}
+.v13-unsaved{display:grid;gap:6px}
+.v13-unsaved>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px;border:1px solid #dae9dd;border-radius:8px}
+.v13-unsaved strong{font-size:12px;overflow-wrap:anywhere}
+.v13-import{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;border:1px solid #c7dfd1;border-radius:10px;padding:11px 15px;background:#f0f7f2;color:#316e60;font-size:12px;font-weight:800}
+.v13-import input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.v13-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0}
+.v13-metrics>div{background:#f0f8f2;border:1px solid #daebe0;border-radius:10px;padding:11px}
+.v13-metrics b{display:block;font-size:23px}
+.v13-metrics small{font-size:10px;color:#668078}
+.v13-observed{background:#edf8ef;border:1px solid #cce5d5;border-radius:10px;padding:13px;margin:13px 0}
+.v13-observed strong{font-size:12px}
+.v13-observed p{font-size:12px}
+.v13-table{width:100%;border-collapse:collapse;text-align:left;font-size:11px}
+.v13-table th,.v13-table td{padding:11px 8px;border-bottom:1px solid #e1eae4}
+.v13-table th{color:#4e7067}
+@media(max-width:1120px){.app-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.v13-records{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.app-nav{grid-template-columns:1fr}.v13-records{grid-template-columns:1fr}.v13-titlebar{display:block}.v13-metrics{gap:5px}.v13-metrics>div{padding:9px}}

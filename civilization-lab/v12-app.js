@@ -16,7 +16,7 @@ function download(name,text){const blob=new Blob([text],{type:"application/json"
 function setNav(n){if(nav==="assessment")copyForm(c);if(nav==="campaign")copyForm(campaign);nav=n;assessmentResult=false;chosen="";render();}
 function render(){
  document.querySelectorAll("[data-nav]").forEach(el=>{el.classList.toggle("active",el.dataset.nav===nav);el.setAttribute("aria-current",el.dataset.nav===nav?"page":"false");});
- if(nav==="assessment")assessment();else if(nav==="market")market();else campaignView();
+ if(nav==="assessment")assessment();else if(nav==="market")market();else if(nav==="campaign")campaignView();else if(nav==="workspace"&&window.CivWorkspaceV13)window.CivWorkspaceV13.render(root,window.CivHubBridgeV12);else root.innerHTML='<div class="panel">Không tải được workspace.</div>';
 }
 function assessment(){
  const selected=M.template(c.templateId)||M.templateFor(c.sector)[0]||M.templates[0];
@@ -122,6 +122,15 @@ return '<div class="report"><h3>Điểm cần kiểm tra trước khi chuyển t
  (v.warnings.length?'<div class="mini-note warn"><ul class="list">'+v.warnings.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>':"")+
  displayMessage("Trạng thái: Bản nháp riêng tư. Không thể phát hành từ GitHub Pages tĩnh. "+v.reason)+'</div>';
 }
+window.CivHubBridgeV12={
+ model:M,
+ getAssessment:()=>{if(nav==="assessment")copyForm(c);return JSON.parse(JSON.stringify(c));},
+ getCampaign:()=>{if(nav==="campaign")copyForm(campaign);return JSON.parse(JSON.stringify(campaign));},
+ getDrafts:()=>JSON.parse(JSON.stringify(drafts)),
+ setAssessment:value=>{c=M.sanitizeRecord(value);mode=c.mode==="free"?"free":"template";nav="assessment";assessmentResult=true;render();},
+ setCampaign:value=>{campaign={...M.campaignDraft(),...JSON.parse(JSON.stringify(value))};campaign.type=["improvement","research","scenario"].includes(campaign.type)?campaign.type:"improvement";nav="campaign";render();},
+ navigate:setNav
+};
 document.querySelectorAll("[data-nav]").forEach(x=>x.onclick=()=>setNav(x.dataset.nav));
 render();
 })();

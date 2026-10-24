@@ -2,7 +2,7 @@
 const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
 const root=path.join(__dirname,"..");
 const manifest=fs.readFileSync(path.join(root,"template.staging.yaml"),"utf8");
-const workflow=fs.readFileSync(path.join(root,"../../..",".github/workflows/civilization-lab-backend-ci.yml"),"utf8");
+const workflow=fs.readFileSync(path.join(root,"../..",".github/workflows/civilization-lab-backend-ci.yml"),"utf8");
 test("SAM staging protects every route via a JWT authorizer",()=>{assert.match(manifest,/DefaultAuthorizer:\s*ClAccessToken/);assert.match(manifest,/AuthorizationScopes:\s*\[!Ref MemberScope\]/);assert.match(manifest,/JwtConfiguration:/);assert.match(manifest,/IdentitySource:\s*'\$request\.header\.Authorization'/);});
 test("Staging declares only private routes and no publish or moderation route",()=>{assert.match(manifest,/Path: \/v1\/private\/cases/);assert.match(manifest,/Path: '\/v1\/private\/campaigns\/\{id\}\/submit'/);assert.doesNotMatch(manifest,/Path:\s*['"]?\/v1\/(?:publication|moderation|public)\//);assert.doesNotMatch(manifest,/Authorizer:\s*NONE/);});
 test("Serverless costs bounded by concurrency and API throttling, not mistaken for zero spend",()=>{assert.match(manifest,/ReservedConcurrentExecutions:\s*2/);assert.match(manifest,/ThrottlingRateLimit:\s*2/);assert.match(manifest,/ThrottlingBurstLimit:\s*4/);assert.match(manifest,/BillingMode:\s*PAY_PER_REQUEST/);});

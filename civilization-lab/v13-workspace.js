@@ -68,7 +68,7 @@ function detail(bridge,e){
  '<div class="v13-observed"><strong>'+esc(measurement.note)+'</strong><p>'+esc(measurement.state==="observed"?"Chênh lệch quan sát: "+(measurement.delta>0?"+":"")+measurement.delta+" "+d.unit:"Chưa có so sánh số liệu đáng tin.")+'</p></div>'+
  (measurement.series.length?'<table class="v13-table"><thead><tr><th>Ngày</th><th>Giá trị</th><th>Điều kiện khi đo</th></tr></thead><tbody>'+measurement.series.map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.value+' '+d.unit)+'</td><td>'+esc(x.note)+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">Chưa nhập số liệu đo được. Không tạo số liệu mẫu giả.</div>')+
  '<div class="fields">'+input("Ngày đo","v13-measure-date","","date")+input("Giá trị đo","v13-measure-value","","number","Số liệu thực tế")+'</div>'+
- textArea("Hoàn cảnh đo, yếu tố khác tác động","v13-measure-note","",2)+btn("v13-record","Thêm quan sát thực tế","primary")+'</div></section>';
+ textArea("Hoàn cảnh đo, yếu tố khác tác động","v13-measure-note","",2)+btn("v13-record","Thêm quan sát thực tế","primary")+'</div>'+((typeof globalThis!=="undefined"&&globalThis.CivGovernanceUIV14)?globalThis.CivGovernanceUIV14.panel(e):"")+'</section>';
 }
 function render(root,bridge){
  const model=bridge.model;let records=[];
@@ -92,6 +92,12 @@ function render(root,bridge){
  root.querySelectorAll("[data-save-draft]").forEach(b=>b.onclick=()=>wrapDo(()=>{const draft=drafts[Number(b.dataset.saveDraft)];if(!draft)throw Error("Bản nháp không tìm thấy.");const e=D.add(useStorage(),model,"campaign",draft);selected=e.id;success("Đã lưu bản nháp riêng. Không công bố lên Marketplace.");},rerender));
  root.querySelectorAll("[data-open-record]").forEach(b=>b.onclick=()=>{selected=b.dataset.openRecord;message="";rerender();});
  if(!item)return;
+ if(typeof globalThis!=="undefined"&&globalThis.CivGovernanceUIV14){
+  globalThis.CivGovernanceUIV14.bind(root,item,
+   nextReview=>{wrapDo(()=>{D.update(useStorage(),model,item.id,{review:nextReview});success("Đã lưu bản rà soát nội bộ trên thiết bị. Không gửi hoặc công bố nội dung.");},rerender);},
+   (msg,isError)=>{if(isError){err(new Error(msg));}else success(msg);const node=root.querySelector(".v13-status");if(node)node.innerHTML='<div class="mini-note '+level+'">'+esc(message)+'</div>';}
+  );
+ }
  document.getElementById("v13-delete").onclick=()=>{if(!confirm("Xóa hẳn hồ sơ riêng này khỏi trình duyệt?"))return;wrapDo(()=>{D.remove(useStorage(),model,item.id);selected="";success("Đã xóa hồ sơ đã chọn.");},rerender);};
  document.getElementById("v13-edit").onclick=()=>{if(item.kind==="assessment")bridge.setAssessment(item.item);else bridge.setCampaign(item.item);};
  document.getElementById("v13-export-one").onclick=()=>wrapDo(()=>{download("civilization-lab-private-dossier-v13.md",report(item),"text/markdown;charset=utf-8");success("Đã xuất báo cáo tự khai kèm giới hạn nhân quả.");},rerender);

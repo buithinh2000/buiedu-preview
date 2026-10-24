@@ -25,7 +25,7 @@ function memoryRepository(){
  return {
  async get(type,id){if(!data[type])throw fail("REPO_TYPE");const x=data[type].get(id);return x?safePlain(x):null;},
  async put(type,obj){if(!data[type])throw fail("REPO_TYPE");data[type].set(obj.id,safePlain(obj));},
- async list(type){if(!data[type])throw fail("REPO_TYPE");return [...data[type].values()].map(safePlain);}
+ async list(type,filter={}){if(!data[type])throw fail("REPO_TYPE");let records=[...data[type].values()];if(filter.owner)records=records.filter(x=>x.owner===filter.owner);if(filter.status)records=records.filter(x=>x.status===filter.status);return records.slice(0,50).map(safePlain);}
  };
 }
 function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID()}={}){
@@ -69,7 +69,7 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   return {id:x.id,updatedAt:x.updatedAt,visibility:"private"};
  },
  async listCases(actor){
-  const a=identity(actor),items=await repo.list("cases");
+  const a=identity(actor),items=await repo.list("cases",{owner:a.sub});
   return items.filter(x=>x.owner===a.sub).map(x=>({id:x.id,title:x.title,sector:x.sector,updatedAt:x.updatedAt}));
  },
  async createCampaign(actor,input){
@@ -135,7 +135,7 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   await repo.put("campaigns",x);return {id:x.id,status:"suspended",public:false};
  },
  async publicCampaigns(){
-  const a=await repo.list("campaigns");
+  const a=await repo.list("campaigns",{status:"published"});
   return a.filter(x=>x.status==="published"&&x.publication).map(publicFields);
  },
  async publicCampaign(campaignId){

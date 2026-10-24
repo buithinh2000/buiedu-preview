@@ -31,7 +31,8 @@ jobs:
           set -euo pipefail
           node --check civilization-lab/backend/src/service.cjs
           node --check civilization-lab/backend/src/http.cjs
-          node --test civilization-lab/backend/test/service.test.cjs
+          node --check civilization-lab/backend/src/dynamo-repository.cjs
+          node --test civilization-lab/backend/test/*.test.cjs
       - name: Verify no AWS provisioning or server publish
         run: |
           set -euo pipefail

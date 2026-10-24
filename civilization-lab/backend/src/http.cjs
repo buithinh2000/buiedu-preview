@@ -47,8 +47,10 @@ function makeHandler(service){
    if(method==="POST"&&path==="/v1/private/cases")return response(201,await service.createCase(actor,jsonBody(event)));
    if(method==="GET"&&path==="/v1/private/cases")return response(200,{items:await service.listCases(actor)});
    if(method==="GET"&&(match=path.match(/^\/v1\/private\/cases\/([a-zA-Z0-9_-]{3,80})$/)))return response(200,await service.getCase(actor,match[1]));
+   if(method==="PATCH"&&(match=path.match(/^\/v1\/private\/cases\/([a-zA-Z0-9_-]{3,80})$/)))return response(200,await service.updateCase(actor,match[1],jsonBody(event)));
    if(method==="POST"&&path==="/v1/private/campaigns")return response(201,await service.createCampaign(actor,jsonBody(event)));
    if(method==="GET"&&(match=path.match(/^\/v1\/private\/campaigns\/([a-zA-Z0-9_-]{3,80})$/)))return response(200,await service.getCampaign(actor,match[1]));
+   if(method==="PATCH"&&(match=path.match(/^\/v1\/private\/campaigns\/([a-zA-Z0-9_-]{3,80})$/)))return response(200,await service.updateCampaign(actor,match[1],jsonBody(event)));
    if(method==="POST"&&(match=path.match(/^\/v1\/private\/campaigns\/([a-zA-Z0-9_-]{3,80})\/submit$/)))return response(202,await service.submitCampaign(actor,match[1]));
    if(method==="POST"&&(match=path.match(/^\/v1\/moderation\/campaigns\/([a-zA-Z0-9_-]{3,80})\/decision$/))){
     const b=jsonBody(event);

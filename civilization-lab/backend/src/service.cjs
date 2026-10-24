@@ -24,7 +24,18 @@ function memoryRepository(){
  const data={cases:new Map(),campaigns:new Map()};
  return {
  async get(type,id){if(!data[type])throw fail("REPO_TYPE");const x=data[type].get(id);return x?safePlain(x):null;},
- async put(type,obj){if(!data[type])throw fail("REPO_TYPE");data[type].set(obj.id,safePlain(obj));},
+ async put(type,obj){
+   if(!data[type])throw fail("REPO_TYPE");
+   const previous=data[type].get(obj.id);
+   if(previous){
+    if(!Number.isInteger(obj.version)||obj.version!==previous.version)throw fail("VERSION_CONFLICT","Record changed since it was loaded");
+   }else if(obj.version!==undefined&&obj.version!==null){
+    throw fail("VERSION_CONFLICT","A new record cannot overwrite an existing item");
+   }
+   const stored={...safePlain(obj),version:previous?previous.version+1:1};
+   data[type].set(obj.id,stored);
+   return safePlain(stored);
+  },
  async list(type,filter={}){if(!data[type])throw fail("REPO_TYPE");let records=[...data[type].values()];if(filter.owner)records=records.filter(x=>x.owner===filter.owner);if(filter.status)records=records.filter(x=>x.status===filter.status);return records.slice(0,50).map(safePlain);}
  };
 }

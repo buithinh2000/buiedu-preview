@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Civilization Lab P1 private-only staging plan; unapproved and NOT DEPLOYED
+Parameters:
+  JwtIssuer:
+    Type: String
+    AllowedPattern: '^https://.+$'
+  JwtAudience:
+    Type: String
+    MinLength: 6
+  MemberScope:
+    Type: String
+    Default: 'civilization:member'
+  FrontendOrigin:
+    Type: String
+    Default: 'https://buithinh2000.github.io'
+    AllowedPattern: '^https://[^/]+$'
+Resources:
+  PrivateData:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      TableName: !Join ['-', [civilization-lab-p1, !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - {AttributeName: PK, AttributeType: S}
+        - {AttributeName: SK, AttributeType: S}
+        - {AttributeName: GSI1PK, AttributeType: S}
+        - {AttributeName: GSI1SK, AttributeType: S}
+        - {AttributeName: GSI2PK, AttributeType: S}
+        - {AttributeName: GSI2SK, AttributeType: S}
+      KeySchema:
+        - {AttributeName: PK, KeyType: HASH}
+        - {AttributeName: SK, KeyType: RANGE}
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - {AttributeName: GSI1PK, KeyType: HASH}
+            - {AttributeName: GSI1SK, KeyType: RANGE}
+          Projection: {ProjectionType: ALL}
+        - IndexName: GSI2
+          KeySchema:
+            - {AttributeName: GSI2PK, KeyType: HASH}
+            - {AttributeName: GSI2SK, KeyType: RANGE}
+          Projection: {ProjectionType: ALL}
+      SSESpecification: {SSEEnabled: true}
+      PointInTimeRecoverySpecification: {PointInTimeRecoveryEnabled: false}
+      Tags:
+        - {Key: Venture, Value: CivilizationLab}
+        - {Key: Environment, Value: DisposableP1Staging}
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 7
+      Tags:
+        - {Key: Venture, Value: CivilizationLab}
+  PrivateHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: staging
+      FailOnWarnings: true
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 2
+        ThrottlingBurstLimit: 4
+      AccessLogSettings:
+        DestinationArn: !GetAtt AccessLogs.Arn
+        Format: '{"requestId":"$context.requestId","status":"$context.status","route":"$context.routeKey"}'
+      CorsConfiguration:
+        AllowOrigins: [!Ref FrontendOrigin]
+        AllowHeaders: [authorization, content-type]
+        AllowMethods: [GET, POST, PATCH]
+      Auth:
+        DefaultAuthorizer: ClAccessToken
+        Authorizers:
+          ClAccessToken:
+            IdentitySource: '$request.header.Authorization'
+            AuthorizationScopes: [!Ref MemberScope]
+            JwtConfiguration:
+              issuer: !Ref JwtIssuer
+              audience: [!Ref JwtAudience]
+      Tags:
+        Venture: CivilizationLab
+        Environment: DisposableP1Staging
+  PrivateApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/lambda.handler
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      MemorySize: 128
+      Timeout: 5
+      ReservedConcurrentExecutions: 2
+      Environment:
+        Variables:
+          CIVILIZATION_TABLE: !Ref PrivateData
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:Query]
+              Resource:
+                - !GetAtt PrivateData.Arn
+                - !Join ['', [!GetAtt PrivateData.Arn, '/index/*']]
+      Tags:
+        Venture: CivilizationLab
+        Environment: DisposableP1Staging
+      Events:
+        CreatePrivateCase:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: /v1/private/cases, Method: POST}
+        ListPrivateCases:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: /v1/private/cases, Method: GET}
+        GetPrivateCase:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/cases/{id}', Method: GET}
+        EditPrivateCase:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/cases/{id}', Method: PATCH}
+        CreatePrivateCampaign:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: /v1/private/campaigns, Method: POST}
+        GetPrivateCampaign:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/campaigns/{id}', Method: GET}
+        EditPrivateCampaign:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/campaigns/{id}', Method: PATCH}
+        SubmitForInternalReview:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/campaigns/{id}/submit', Method: POST}
+Outputs:
+  DataTableName:
+    Description: Isolated disposable private staging table
+    Value: !Ref PrivateData

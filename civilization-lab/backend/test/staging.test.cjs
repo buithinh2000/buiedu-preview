@@ -1,0 +1,12 @@
+"use strict";
+const test=require("node:test"),assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path");
+const root=path.join(__dirname,"..");
+const manifest=fs.readFileSync(path.join(root,"template.staging.yaml"),"utf8");
+const workflow=fs.readFileSync(path.join(root,"../../..",".github/workflows/civilization-lab-backend-ci.yml"),"utf8");
+test("SAM staging protects every route via a JWT authorizer",()=>{assert.match(manifest,/DefaultAuthorizer:\s*ClAccessToken/);assert.match(manifest,/AuthorizationScopes:\s*\[!Ref MemberScope\]/);assert.match(manifest,/JwtConfiguration:/);assert.match(manifest,/IdentitySource:\s*'\$request\.header\.Authorization'/);});
+test("Staging declares only private routes and no publish or moderation route",()=>{assert.match(manifest,/Path: \/v1\/private\/cases/);assert.match(manifest,/Path: '\/v1\/private\/campaigns\/\{id\}\/submit'/);assert.doesNotMatch(manifest,/Path:\s*['"]?\/v1\/(?:publication|moderation|public)\//);assert.doesNotMatch(manifest,/Authorizer:\s*NONE/);});
+test("Serverless costs bounded by concurrency and API throttling, not mistaken for zero spend",()=>{assert.match(manifest,/ReservedConcurrentExecutions:\s*2/);assert.match(manifest,/ThrottlingRateLimit:\s*2/);assert.match(manifest,/ThrottlingBurstLimit:\s*4/);assert.match(manifest,/BillingMode:\s*PAY_PER_REQUEST/);});
+test("Private DynamoDB has owner and publication indexes with encryption enabled",()=>{assert.match(manifest,/IndexName: GSI1/);assert.match(manifest,/IndexName: GSI2/);assert.match(manifest,/SSEEnabled:\s*true/);assert.match(manifest,/CIVILIZATION_TABLE/);});
+test("IAM is limited to DynamoDB reads writes and query, no wildcard admin",()=>{assert.match(manifest,/dynamodb:GetItem/);assert.match(manifest,/dynamodb:PutItem/);assert.match(manifest,/dynamodb:Query/);assert.doesNotMatch(manifest,/dynamodb:\*/);assert.doesNotMatch(manifest,/Action:\s*['"]?\*/);});
+test("CI has no AWS OIDC deploy, secret access, or publish token privileges",()=>{assert.match(workflow,/contents:\s*read/);assert.doesNotMatch(workflow,/id-token:\s*write/);assert.doesNotMatch(workflow,/sam deploy|aws cloudformation deploy|aws dynamodb create-table/);});
+test("Lambda source uses an isolated table name and deferred SDK initialization",()=>{const text=fs.readFileSync(path.join(root,"src/lambda.cjs"),"utf8");assert.match(text,/process\.env\.CIVILIZATION_TABLE/);assert.match(text,/makeDynamoRepository/);assert.match(text,/DynamoDBDocumentClient/);});

@@ -18,7 +18,7 @@ function fixture(){
   if(kind==="Query"){
    if(forcedQuery)return {Items:structuredClone(forcedQuery)};
    const pk=input.ExpressionAttributeValues[":value"];
-   return {Items:[...base.values()].filter(x=>x[input.IndexName==="GSI1"?"GSI1PK":"GSI2PK"]===pk).slice(0,input.Limit).map(structuredClone)};
+   return {Items:[...base.values()].filter(x=>x[input.IndexName==="GSI1"?"GSI1PK":"GSI2PK"]===pk).slice(0,input.Limit).map(x=>structuredClone(x))};
   }
   throw new Error("Unexpected command "+kind);
  }};

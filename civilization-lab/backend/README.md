@@ -47,3 +47,22 @@ node --test civilization-lab/backend/test/service.test.cjs
 AWS technical sources:
 - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html
 - https://docs.aws.amazon.com/us_en/amazondynamodb/latest/developerguide/BestPractices_OptimisticLocking.html
+
+
+## P1 source additions (25 October 2026)
+
+- `src/dynamo-repository.cjs`: AWS SDK v3 DocumentClient adapter using conditional version writes. In-memory tests verify conflict rejection and owner-scoped GSI queries. For public listing, re-reads each GSI candidate from the base table with strong consistency before releasing it, to prevent stale suspended records appearing.
+- `src/lambda.cjs`, `package.json`: deferred AWS Lambda entrypoint and explicit SDK dependencies for a future packaged deployment.
+- `template.staging.yaml`: PRIVATE ONLY AWS SAM draft. JWT authorizer and required member scope on every exposed route; 2 rps/4 burst API settings and reserved Lambda concurrency 2; venture-specific DynamoDB GSIs and a limited IAM policy. No moderator, publisher or public campaign route in this staged template.
+- `test/dynamo.test.cjs`, `test/staging.test.cjs`: offline index/locking/privacy and staging guard tests. Latest verified CI: 30/30 tests passed, GitHub Actions run 40141757301 (prior to this documentation update).
+- `BUI_TAI_CORE_P1_HANDOFF_2026-10-25.md`: centralized platform provisioning/Owner Gate contract, reusable for future ventures.
+
+P1 is **source-complete for a disposable private-data staging experiment**, not production-ready. The SAM template has not undergone an actual SAM build, CloudFormation change-set review, signed-in end-to-end test, or AWS deployment. No live backend URL exists. AWS and Cloudflare remain unchanged.
+
+### Read before AWS staging
+
+The code trusts JWT claims passed by API Gateway **only if a correctly configured authorizer validated the token**, all private routes require an authenticated access token, and direct Lambda invocation is restricted. It does not implement its own JWT cryptography.
+
+DynamoDB indexes are eventually consistent, so any public-list candidate must be checked again from the primary table with strongly consistent read. Optimistic versions prevent lost updates, but a production publication flow still requires durable audit/transaction safeguards, identity/organization verification, moderated content, consent, abuse response and deletion/retention policy.
+
+AWS staged resources are potentially billable despite small limits. Budget alerts do not impose a hard cost ceiling. The launch requires approval of AWS account, region, OIDC issuer/audience, designated IAM deploy role, exact change set and monthly spend threshold. To date none has been executed.

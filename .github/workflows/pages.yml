@@ -90,8 +90,8 @@ jobs:
           test -s public/civilization-lab/v10-review.js
           test -s public/civilization-lab/v10-portfolio.js
           grep -q "v1.1" public/civilization-lab/legacy-v11.html
-          grep -q "v1.3" public/civilization-lab/index.html
-          grep -q "Evidence & Scenario Hub" public/civilization-lab/index.html
+          grep -q "v1.4" public/civilization-lab/index.html
+          grep -q "Campaign Review & Trust Lab" public/civilization-lab/index.html
           test -s public/civilization-lab/v11-interview.js
           test -s public/civilization-lab/v11-ui.js
           test -s public/civilization-lab/v11-style.css

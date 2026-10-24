@@ -1,0 +1,53 @@
+name: BuiEdu Cloudflare Pages isolated frontend candidate (build only)
+on:
+  push:
+    branches:
+      - release/buiedu-cloudflare-isolated-20261025
+    paths:
+      - 'deploy/cloudflare/**'
+      - 'index.html'
+      - 'styles.css'
+      - '*.mjs'
+      - 'tests/*.test.mjs'
+      - '.github/workflows/buiedu-cloudflare-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: buiedu-cloudflare-candidate
+  cancel-in-progress: true
+jobs:
+  buiedu-only-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify source and public BuiEdu product tests (no paid AI)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${OPENAI_API_KEY:-}"
+          test -z "${AWS_ACCESS_KEY_ID:-}"
+          test -z "${CLOUDFLARE_API_TOKEN:-}"
+          node --test tests/*.test.mjs
+          node --check deploy/cloudflare/validate.mjs
+          bash -n deploy/cloudflare/build.sh
+      - name: Build Cloudflare Pages candidate from strict BuiEdu allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash deploy/cloudflare/build.sh
+          test ! -e dist-buiedu/civilization-lab
+          test ! -e dist-buiedu/.env
+          test ! -e dist-buiedu/_worker.js
+          test -s dist-buiedu/index.html
+          test -s dist-buiedu/_headers
+      - name: Archive validated artifact only (NO Cloudflare DNS/deploy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: buiedu-cloudflare-pages-candidate
+          path: dist-buiedu/
+          if-no-files-found: error
+          retention-days: 7

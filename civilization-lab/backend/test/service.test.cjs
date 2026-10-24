@@ -19,3 +19,22 @@ test("publisher cannot skip independent moderation",async()=>{const {service}=se
 test("suspending publication removes public listing",async()=>{const {service}=setup();const x=await service.createCampaign(user("member_one"),draft());await service.submitCampaign(user("member_one"),x.id);await service.reviewCampaign(moderator("reviewer_two"),x.id,"approve_for_publication","Verified excerpt suitable for public view",curated);await service.publishCampaign(publisher("publisher_three"),x.id);await service.unpublishCampaign(moderator("reviewer_four"),x.id,"New information requires careful review");assert.equal((await service.publicCampaigns()).length,0);});
 test("only verified authorizer claims establish private API identity",async()=>{const {handler}=setup();const missing=await handler({rawPath:"/v1/private/cases",requestContext:{http:{method:"POST"}},body:JSON.stringify({sub:"member_one",sector:"company"})});assert.equal(missing.statusCode,401);const ok=await handler({rawPath:"/v1/public/campaigns",requestContext:{http:{method:"GET"}}});assert.equal(ok.statusCode,200);});
 test("invalid JSON fails before mutation",async()=>{const {handler,service}=setup();const res=await handler({rawPath:"/v1/private/cases",requestContext:{http:{method:"POST"},authorizer:{jwt:{claims:{sub:"member_one",scope:""}}}},body:"{invalid"});assert.equal(res.statusCode,400);assert.equal((await service.listCases(user("member_one"))).length,0);});
+
+test("Owner can update private narrative but cannot change owner or visibility",async()=>{
+ const {service}=setup();
+ const p=await service.createCase(user("member_one"),{sector:"company",title:"Theo dõi công việc",narrative:"Một đơn hàng vừa hoàn thành và cần đo lại thời gian."});
+ await service.updateCase(user("member_one"),p.id,{title:"Theo dõi tiến độ mới",owner:"member_two",visibility:"public"});
+ const a=await service.getCase(user("member_one"),p.id);
+ assert.equal(a.title,"Theo dõi tiến độ mới");assert.equal(a.visibility,"private");
+ await assert.rejects(service.updateCase(user("member_two"),p.id,{title:"Thay đổi trái quyền"}),{code:"NOT_FOUND"});
+});
+test("Campaign edit invalidates review and never modifies a submitted snapshot",async()=>{
+ const {service}=setup(),a=await service.createCampaign(user("member_one"),draft());
+ await service.updateCampaign(user("member_one"),a.id,draft({title:"Bản đề xuất đã sửa có thông tin mới"}));
+ await service.submitCampaign(user("member_one"),a.id);
+ await assert.rejects(service.updateCampaign(user("member_one"),a.id,draft()),{code:"BAD_STATE"});
+ await service.reviewCampaign(moderator("reviewer_two"),a.id,"request_changes","Need to clarify the evidence and participation conditions.");
+ await service.updateCampaign(user("member_one"),a.id,draft({title:"Bản sửa sau phản hồi của người xét duyệt"}));
+ const current=await service.getCampaign(user("member_one"),a.id);
+ assert.equal(current.status,"private_draft");assert.equal(current.moderation,null);
+});

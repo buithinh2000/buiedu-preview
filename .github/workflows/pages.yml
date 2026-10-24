@@ -50,7 +50,7 @@ jobs:
           test "$(find public -maxdepth 1 -type f | wc -l)" -eq 14
           # Isolated static preview; BuiEdu root and build remain unchanged.
           mkdir -p public/civilization-lab
-          cp civilization-lab/index.html civilization-lab/legacy-v07.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js civilization-lab/RESEARCH_PROTOCOL_v08.md civilization-lab/v09-preview.html civilization-lab/v09-engine.js civilization-lab/v09-app.js civilization-lab/v10-review.js civilization-lab/v10-portfolio.js civilization-lab/v10-workspace.js civilization-lab/v11-interview.js civilization-lab/v11-ui.js civilization-lab/v11-toggle.js civilization-lab/v11-style.css civilization-lab/legacy-v11.html civilization-lab/v12-hub.html civilization-lab/v12-model.js civilization-lab/v12-app.js civilization-lab/v12-style.css civilization-lab/PRODUCT_ARCHITECTURE_v12.md civilization-lab/v13-model.js civilization-lab/v13-workspace.js civilization-lab/v13-style.css civilization-lab/PRODUCT_ARCHITECTURE_v13.md civilization-lab/v14-governance.js civilization-lab/v14-governance-ui.js civilization-lab/v14-style.css public/civilization-lab/
+          cp civilization-lab/index.html civilization-lab/legacy-v07.html civilization-lab/engine-v06.js civilization-lab/evidence-v07.js civilization-lab/v08-preview.html civilization-lab/v08-atlas.js civilization-lab/v08-reason.js civilization-lab/v08-app.js civilization-lab/RESEARCH_PROTOCOL_v08.md civilization-lab/v09-preview.html civilization-lab/v09-engine.js civilization-lab/v09-app.js civilization-lab/v10-review.js civilization-lab/v10-portfolio.js civilization-lab/v10-workspace.js civilization-lab/v11-interview.js civilization-lab/v11-ui.js civilization-lab/v11-toggle.js civilization-lab/v11-style.css civilization-lab/legacy-v11.html civilization-lab/v12-hub.html civilization-lab/v12-model.js civilization-lab/v12-app.js civilization-lab/v12-style.css civilization-lab/PRODUCT_ARCHITECTURE_v12.md civilization-lab/v13-model.js civilization-lab/v13-workspace.js civilization-lab/v13-style.css civilization-lab/PRODUCT_ARCHITECTURE_v13.md civilization-lab/v14-governance.js civilization-lab/v14-governance-ui.js civilization-lab/v14-style.css civilization-lab/PRODUCT_ARCHITECTURE_v14.md public/civilization-lab/
           node --check public/civilization-lab/engine-v06.js
           node --check public/civilization-lab/evidence-v07.js
           node --test civilization-lab/model.test.cjs
@@ -107,6 +107,7 @@ jobs:
           test -s public/civilization-lab/v14-governance.js
           test -s public/civilization-lab/v14-governance-ui.js
           test -s public/civilization-lab/v14-style.css
+          test -s public/civilization-lab/PRODUCT_ARCHITECTURE_v14.md
           grep -q 'v1.4' public/civilization-lab/index.html
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5

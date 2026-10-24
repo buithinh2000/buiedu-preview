@@ -9,6 +9,8 @@ on:
       - '.github/workflows/pages.yml'
       - 'tests/*.test.mjs'
       - 'civilization-lab/**'
+      # Backend-only changes run their own low-cost CI, not the public site deployment.
+      - '!civilization-lab/backend/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -112,6 +114,7 @@ jobs:
           test -s public/civilization-lab/v14-governance-ui.js
           test -s public/civilization-lab/v14-style.css
           test -s public/civilization-lab/PRODUCT_ARCHITECTURE_v14.md
+          test ! -e public/civilization-lab/backend
           grep -q 'v1.4' public/civilization-lab/index.html
           ! grep -R -E 'api[_-]?key|sk-proj-' public/*.mjs || exit 1
       - uses: actions/configure-pages@v5

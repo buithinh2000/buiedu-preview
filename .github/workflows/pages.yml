@@ -78,6 +78,10 @@ jobs:
           node --check civilization-lab/v14-governance.js
           node --check civilization-lab/v14-governance-ui.js
           node --test civilization-lab/v14.test.cjs
+          # Isolated non-deployed server-side API contract and authorization tests.
+          node --check civilization-lab/backend/src/service.cjs
+          node --check civilization-lab/backend/src/http.cjs
+          node --test civilization-lab/backend/test/service.test.cjs
           test -s public/civilization-lab/index.html
           test -s public/civilization-lab/engine-v06.js
           test -s public/civilization-lab/evidence-v07.js

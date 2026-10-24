@@ -57,6 +57,17 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   const a=identity(actor),x=await get("cases",caseId);own(a,x);
   return {id:x.id,sector:x.sector,title:x.title,narrative:x.narrative,visibility:x.visibility,updatedAt:x.updatedAt};
  },
+ async updateCase(actor,caseId,input){
+  const a=identity(actor),x=await get("cases",caseId);own(a,x);
+  if(!input||typeof input!=="object"||Array.isArray(input))throw fail("INVALID_INPUT");
+  // All writable fields are explicitly whitelisted. Never accept owner, visibility or status.
+  if(Object.prototype.hasOwnProperty.call(input,"title"))x.title=required(input.title,5,MAX.title,"title");
+  if(Object.prototype.hasOwnProperty.call(input,"narrative"))x.narrative=required(input.narrative,15,MAX.description,"narrative");
+  if(!Object.prototype.hasOwnProperty.call(input,"title")&&!Object.prototype.hasOwnProperty.call(input,"narrative"))throw fail("INVALID_INPUT","Nothing to update");
+  x.updatedAt=now();x.events.push(audit(a,"PRIVATE_CASE_UPDATED","case","Owner-edited case"));
+  await repo.put("cases",x);
+  return {id:x.id,updatedAt:x.updatedAt,visibility:"private"};
+ },
  async listCases(actor){
   const a=identity(actor),items=await repo.list("cases");
   return items.filter(x=>x.owner===a.sub).map(x=>({id:x.id,title:x.title,sector:x.sector,updatedAt:x.updatedAt}));
@@ -66,6 +77,15 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   const x={id:id(),owner:a.sub,sector:d.sector,draft:d,status:"private_draft",createdAt:now(),updatedAt:now(),
    moderation:null,publication:null,history:[audit(a,"CAMPAIGN_CREATED","campaign","Private campaign created")]};
   await repo.put("campaigns",x);return {id:x.id,status:x.status};
+ },
+ async updateCampaign(actor,campaignId,input){
+  const a=identity(actor),x=await get("campaigns",campaignId);own(a,x);
+  if(x.status!=="private_draft"&&x.status!=="changes_requested")throw fail("BAD_STATE","Review snapshot is locked");
+  // A resubmitted campaign must get a fresh moderation decision, not reuse a prior approval.
+  x.draft=campaignData(input);
+  x.sector=x.draft.sector;x.status="private_draft";x.moderation=null;x.publication=null;
+  x.updatedAt=now();x.history.push(audit(a,"CAMPAIGN_DRAFT_UPDATED","campaign","Submitted previous review invalidated; private only"));
+  await repo.put("campaigns",x);return {id:x.id,status:x.status,updatedAt:x.updatedAt};
  },
  async getCampaign(actor,campaignId){
   const a=identity(actor),x=await get("campaigns",campaignId);own(a,x);

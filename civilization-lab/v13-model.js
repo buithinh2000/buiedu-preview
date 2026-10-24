@@ -8,13 +8,14 @@ const LIMIT=480000,MAX_RECORDS=35,MAX_EVIDENCE=60,MAX_OBSERVATIONS=300;
 const text=(x,n=1500)=>String(x==null?"":x).trim().slice(0,n);
 const dateOK=s=>typeof s==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s+"T12:00:00Z"));
 const copy=x=>JSON.parse(JSON.stringify(x));
+function reviewLib(){const g=typeof module==="object"&&module.exports?require("./v14-governance.js"):(typeof globalThis!=="undefined"?globalThis.CivReviewV14:null);if(!g)throw Error("REVIEW_MODULE_UNAVAILABLE");return g;}
 function empty(){return {schema:"civilization-lab/workspace-1.3",records:[]};}
 function nameId(v){return typeof v==="string"&&/^[a-zA-Z0-9_-]{5,80}$/.test(v);}
 function uuid(){return "cl_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);}
 const sectorIDs=["company","family","school","community","nonprofit","public"];
 function entry(kind,item,id){
  if(!["assessment","campaign"].includes(kind))throw Error("INVALID_KIND");
- const safe={kind,id:nameId(id)?id:uuid(),title:text(item.title||"Chưa đặt tên",120),sector:sectorIDs.includes(item.sector)?item.sector:"community",updatedAt:new Date().toISOString(),item:copy(item),evidence:[],observations:[],scenario:{pressure:1,adoption:1,external:1,metric:"",unit:"",direction:"up",baseline:null,target:null,horizon:"90"}};
+ const safe={kind,id:nameId(id)?id:uuid(),title:text(item.title||"Chưa đặt tên",120),sector:sectorIDs.includes(item.sector)?item.sector:"community",updatedAt:new Date().toISOString(),item:copy(item),evidence:[],observations:[],review:reviewLib().empty(),scenario:{pressure:1,adoption:1,external:1,metric:"",unit:"",direction:"up",baseline:null,target:null,horizon:"90"}};
  if(kind==="campaign"){safe.item.status="private_draft";safe.item.type="private_draft";}return safe;
 }
 function safeEvidence(x){
@@ -31,7 +32,7 @@ function sanitize(x,model){
  if(!src.item||typeof src.item!=="object")throw Error("INVALID_ITEM");
  const kind=src.kind,base=kind==="assessment"?model.sanitizeRecord(src.item):model.makeDraft(src.item);
  if(kind==="campaign"){base.id=src.id;base.status="private_draft";base.type="private_draft";base.comments=Array.isArray(src.item.comments)?src.item.comments.slice(0,40).map(x=>({kind:["idea","counter","evidence","risk"].includes(x.kind)?x.kind:"idea",text:text(x.text,500),status:"local_only"})):[];}
- const e={kind,id:src.id,title:text(src.title,120),sector:sectorIDs.includes(src.sector)?src.sector:"community",updatedAt:text(src.updatedAt,40),item:base,evidence:[],observations:[],scenario:{pressure:1,adoption:1,external:1,metric:"",unit:"",direction:"up",baseline:null,target:null,horizon:"90"}};
+ const e={kind,id:src.id,title:text(src.title,120),sector:sectorIDs.includes(src.sector)?src.sector:"community",updatedAt:text(src.updatedAt,40),item:base,evidence:[],observations:[],review:reviewLib().sanitize(src.review),scenario:{pressure:1,adoption:1,external:1,metric:"",unit:"",direction:"up",baseline:null,target:null,horizon:"90"}};
  if(!Array.isArray(src.evidence)||src.evidence.length>MAX_EVIDENCE)throw Error("INVALID_EVIDENCE");
  e.evidence=src.evidence.map(safeEvidence);
  if(!Array.isArray(src.observations)||src.observations.length>MAX_OBSERVATIONS)throw Error("INVALID_OBSERVATIONS");
@@ -63,6 +64,7 @@ function update(storage,model,id,change){
  if(change.scenario)next.scenario={...next.scenario,...change.scenario};
  if(change.observations)next.observations=change.observations;
  if(change.item)next.item=change.item;
+ if(change.review)next.review=reviewLib().sanitize(change.review);
  next.updatedAt=new Date().toISOString();old.records[i]=next;
  return save(storage,model,old).records[i];
 }

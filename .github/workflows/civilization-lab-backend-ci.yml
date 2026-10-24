@@ -1,0 +1,41 @@
+name: Civilization Lab Backend CI (No Deploy)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'civilization-lab/backend/**'
+      - '.github/workflows/civilization-lab-backend-ci.yml'
+  pull_request:
+    paths:
+      - 'civilization-lab/backend/**'
+      - '.github/workflows/civilization-lab-backend-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: civilization-lab-backend-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend-security-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate isolated API sources
+        run: |
+          set -euo pipefail
+          node --check civilization-lab/backend/src/service.cjs
+          node --check civilization-lab/backend/src/http.cjs
+          node --test civilization-lab/backend/test/service.test.cjs
+      - name: Verify no AWS provisioning or server publish
+        run: |
+          set -euo pipefail
+          test ! -e civilization-lab/backend/node_modules
+          test ! -e civilization-lab/backend/.env
+          test ! -e civilization-lab/backend/.aws
+          test ! -e civilization-lab/backend/terraform.tfstate

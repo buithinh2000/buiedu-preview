@@ -1,0 +1,13 @@
+{
+  "name": "civilization-lab-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Isolated source-only Civilization Lab staging API; not deployed",
+  "main": "src/lambda.cjs",
+  "engines": {"node": ">=22"},
+  "scripts": {"test": "node --test test/*.test.cjs", "check": "node --check src/service.cjs && node --check src/http.cjs && node --check src/dynamo-repository.cjs && node --check src/lambda.cjs"},
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.800.0",
+    "@aws-sdk/lib-dynamodb": "^3.800.0"
+  }
+}

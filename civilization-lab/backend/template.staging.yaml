@@ -130,6 +130,9 @@ Resources:
         CreatePrivateCampaign:
           Type: HttpApi
           Properties: {ApiId: !Ref PrivateHttpApi, Path: /v1/private/campaigns, Method: POST}
+        ListPrivateCampaigns:
+          Type: HttpApi
+          Properties: {ApiId: !Ref PrivateHttpApi, Path: /v1/private/campaigns, Method: GET}
         GetPrivateCampaign:
           Type: HttpApi
           Properties: {ApiId: !Ref PrivateHttpApi, Path: '/v1/private/campaigns/{id}', Method: GET}

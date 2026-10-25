@@ -97,3 +97,14 @@ test("A spoofed JWT in body does not establish identity or moderation power",asy
  const review=await x.call("POST","/v1/moderation/campaigns/"+draft.data.id+"/decision","member_b",{decision:"approve_for_publication",reason:"I declare myself moderator",role:"moderator",publicCopy:{title:"Something"}});
  assert.equal(review.status,403);
 });
+
+test("P1 staging is fail-closed even if an admin accidentally invokes publish with a trusted scope",async()=>{
+ const x=setup();
+ const created=await x.call("POST","/v1/private/campaigns","member_a",campaignInput);
+ await x.call("POST","/v1/private/campaigns/"+created.data.id+"/submit","member_a");
+ await assert.rejects(
+  x.service.publishCampaign({sub:"publisher_different",scopes:["civilization:publish"]},created.data.id),
+  {code:"PUBLICATION_DISABLED"}
+ );
+ assert.equal((await x.call("GET","/v1/public/campaigns",null)).data.items.length,0);
+});

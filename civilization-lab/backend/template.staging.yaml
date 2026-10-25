@@ -66,6 +66,14 @@ Resources:
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
         Format: '{"requestId":"$context.requestId","status":"$context.status","route":"$context.routeKey"}'
+      # SAM needs an inline OpenAPI DefinitionBody to apply CORS correctly.
+      # SAM augments the paths with the HttpApi events declared below.
+      DefinitionBody:
+        openapi: '3.0.1'
+        info:
+          title: Civilization Lab Private Staging
+          version: '1.0'
+        paths: {}
       CorsConfiguration:
         AllowOrigins: [!Ref FrontendOrigin]
         AllowHeaders: [authorization, content-type]

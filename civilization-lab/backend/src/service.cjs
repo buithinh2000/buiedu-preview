@@ -39,7 +39,7 @@ function memoryRepository(){
  async list(type,filter={}){if(!data[type])throw fail("REPO_TYPE");let records=[...data[type].values()];if(filter.owner)records=records.filter(x=>x.owner===filter.owner);if(filter.status)records=records.filter(x=>x.status===filter.status);return records.slice(0,50).map(safePlain);}
  };
 }
-function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID()}={}){
+function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(),publicationEnabled=false}={}){
  if(!repo||typeof repo.get!=="function"||typeof repo.put!=="function"||typeof repo.list!=="function")throw new Error("Repository adapter required");
  const audit=(a,type,subject,detail)=>({id:id(),at:now(),actor:a.sub,type,subject,detail:clean(detail,MAX.reason)});
  const get=async(type,recordId)=>{const x=await repo.get(type,recordId);if(!x)throw fail("NOT_FOUND","Record not found");return x;};
@@ -130,6 +130,7 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   x.updatedAt=now();await repo.put("campaigns",x);return {id:x.id,status:x.status,public:false};
  },
  async publishCampaign(actor,campaignId){
+  if(publicationEnabled!==true)throw fail("PUBLICATION_DISABLED","Publishing is disabled until the independent launch gate is approved");
   const publisher=assertScope(actor,"civilization:publish"),x=await get("campaigns",campaignId);
   if(x.owner===publisher.sub||x.moderation?.reviewer===publisher.sub)throw fail("SEGREGATION_OF_DUTIES","Publisher, reviewer and submitter must be separate people");
   if(x.status!=="reviewed_waiting_publisher"||x.moderation?.decision!=="approve_for_publication"||!x.moderation.proposed)throw fail("BAD_STATE","Independent moderation approval required");

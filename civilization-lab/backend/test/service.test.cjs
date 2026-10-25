@@ -2,7 +2,7 @@
 const test=require("node:test"),assert=require("node:assert/strict");
 const {createService,memoryRepository}=require("../src/service.cjs");
 const {makeHandler}=require("../src/http.cjs");
-function setup(){let i=0;const service=createService(memoryRepository(),{id:()=>"case_"+(++i),now:()=>"2026-10-25T00:00:00Z"});return {service,handler:makeHandler(service)};}
+function setup(){let i=0;const service=createService(memoryRepository(),{id:()=>"case_"+(++i),now:()=>"2026-10-25T00:00:00Z",publicationEnabled:true});return {service,handler:makeHandler(service)};}
 const user=id=>({sub:id,scopes:[]});
 const moderator=id=>({sub:id,scopes:["civilization:moderate"]});
 const publisher=id=>({sub:id,scopes:["civilization:publish"]});

@@ -70,9 +70,9 @@ function makeDynamoRepository({client,commands,tableName,maxList=50}){
   if(filter.status&&filter.status!=="published")throw fail("QUERY_SCOPE_REQUIRED");
   const params={
    TableName:table,IndexName:isOwner?"GSI1":"GSI2",
-   KeyConditionExpression:"#partition = :value",
-   ExpressionAttributeNames:{"#partition":isOwner?"GSI1PK":"GSI2PK"},
-   ExpressionAttributeValues:{":value":isOwner?"OWNER#"+filter.owner:"PUBLIC#CAMPAIGNS"},
+   KeyConditionExpression:isOwner?"#partition = :value AND begins_with(#sort, :typePrefix)":"#partition = :value",
+   ExpressionAttributeNames:isOwner?{"#partition":"GSI1PK","#sort":"GSI1SK"}:{"#partition":"GSI2PK"},
+   ExpressionAttributeValues:isOwner?{":value":"OWNER#"+filter.owner,":typePrefix":typeName(type)+"#"}:{":value":"PUBLIC#CAMPAIGNS"},
    Limit:maxList,ScanIndexForward:false
   };
   // A GSI only supplies candidates; it is eventually consistent. Re-read

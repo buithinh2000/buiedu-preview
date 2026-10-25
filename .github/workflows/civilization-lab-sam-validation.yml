@@ -1,0 +1,43 @@
+name: Civilization Lab P1 SAM Validation (No Deploy)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'civilization-lab/backend/template.staging.yaml'
+      - 'civilization-lab/backend/src/lambda.cjs'
+      - 'civilization-lab/backend/package.json'
+      - '.github/workflows/civilization-lab-sam-validation.yml'
+  pull_request:
+    paths:
+      - 'civilization-lab/backend/template.staging.yaml'
+      - 'civilization-lab/backend/src/lambda.cjs'
+      - 'civilization-lab/backend/package.json'
+      - '.github/workflows/civilization-lab-sam-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: civilization-lab-sam-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: aws-actions/setup-sam@v3
+        with:
+          use-installer: true
+      - name: Validate unprovisioned AWS SAM template
+        working-directory: civilization-lab/backend
+        run: |
+          set -euo pipefail
+          sam validate --lint --template-file template.staging.yaml --region ap-southeast-2
+      - name: Assert private API routes only
+        run: |
+          set -euo pipefail
+          ! grep -E 'Path: .*\/v1\/(public|publication|moderation)\/' civilization-lab/backend/template.staging.yaml
+          ! grep -E '^\s*Authorizer: NONE' civilization-lab/backend/template.staging.yaml
+          echo 'Validated only: no AWS credentials used, no deploy, no provision'

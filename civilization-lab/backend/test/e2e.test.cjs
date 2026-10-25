@@ -108,3 +108,18 @@ test("P1 staging is fail-closed even if an admin accidentally invokes publish wi
  );
  assert.equal((await x.call("GET","/v1/public/campaigns",null)).data.items.length,0);
 });
+
+test("Returning member can list their saved campaigns and reopen one without seeing other accounts",async()=>{
+ const x=setup();
+ const a=await x.call("POST","/v1/private/campaigns","member_a",campaignInput);
+ const b=await x.call("POST","/v1/private/campaigns","member_b",{...campaignInput,title:"Chiến dịch riêng của member B"});
+ assert.equal(a.status,201);assert.equal(b.status,201);
+ const found=await x.call("GET","/v1/private/campaigns","member_a");
+ assert.equal(found.status,200);assert.equal(found.data.items.length,1);
+ assert.equal(found.data.items[0].id,a.data.id);
+ assert.ok(!JSON.stringify(found.data).includes("member B"));
+ const reopen=await x.call("GET","/v1/private/campaigns/"+found.data.items[0].id,"member_a");
+ assert.equal(reopen.status,200);assert.equal(reopen.data.draft.title,campaignInput.title);
+ assert.equal((await x.call("GET","/v1/private/campaigns/"+a.data.id,"member_b")).status,404);
+ assert.equal((await x.call("GET","/v1/private/campaigns",null)).status,401);
+});

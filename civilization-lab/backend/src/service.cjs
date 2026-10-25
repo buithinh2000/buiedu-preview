@@ -98,6 +98,10 @@ function createService(repo,{now=()=>new Date().toISOString(),id=()=>randomUUID(
   x.updatedAt=now();x.history.push(audit(a,"CAMPAIGN_DRAFT_UPDATED","campaign","Submitted previous review invalidated; private only"));
   await repo.put("campaigns",x);return {id:x.id,status:x.status,updatedAt:x.updatedAt};
  },
+ async listCampaigns(actor){
+  const a=identity(actor),items=await repo.list("campaigns",{owner:a.sub});
+  return items.filter(x=>x.owner===a.sub).map(x=>({id:x.id,title:x.draft.title,sector:x.sector,status:x.status,updatedAt:x.updatedAt}));
+ },
  async getCampaign(actor,campaignId){
   const a=identity(actor),x=await get("campaigns",campaignId);own(a,x);
   return {id:x.id,status:x.status,sector:x.sector,draft:x.draft,moderation:x.moderation?{decision:x.moderation.decision,at:x.moderation.at}:null,publication:x.publication?{publishedAt:x.publication.publishedAt}:null,updatedAt:x.updatedAt};

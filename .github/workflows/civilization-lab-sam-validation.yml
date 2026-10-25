@@ -22,7 +22,7 @@ concurrency:
 jobs:
   validate-only:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,6 +35,14 @@ jobs:
         run: |
           set -euo pipefail
           sam validate --lint --template-file template.staging.yaml --region ap-southeast-2
+      - name: Build Lambda artifact locally (no AWS upload)
+        working-directory: civilization-lab/backend
+        run: |
+          set -euo pipefail
+          sam build --template-file template.staging.yaml --build-dir .aws-sam/build
+          test -s .aws-sam/build/template.yaml
+          test -s .aws-sam/build/PrivateApiFunction/src/lambda.cjs
+          echo 'Packaged build locally only. No deploy and no AWS credentials.'
       - name: Assert private API routes only
         run: |
           set -euo pipefail

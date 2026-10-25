@@ -66,3 +66,16 @@ The code trusts JWT claims passed by API Gateway **only if a correctly configure
 DynamoDB indexes are eventually consistent, so any public-list candidate must be checked again from the primary table with strongly consistent read. Optimistic versions prevent lost updates, but a production publication flow still requires durable audit/transaction safeguards, identity/organization verification, moderated content, consent, abuse response and deletion/retention policy.
 
 AWS staged resources are potentially billable despite small limits. Budget alerts do not impose a hard cost ceiling. The launch requires approval of AWS account, region, OIDC issuer/audience, designated IAM deploy role, exact change set and monthly spend threshold. To date none has been executed.
+
+## P1 readiness checkpoint — 25 October 2026
+
+**Verified in CI:** private-only AWS SAM validate --lint PASS; SAM local Lambda artifact build PASS; HTTP → owner JWT claims → service → DynamoDB adapter with two mocked user identities PASS. Latest full backend test suite: **37/37 PASS**. No AWS deployment was performed.
+
+- Explicit browser CORS now has an inline OpenAPI DefinitionBody, needed for SAM HttpApi CORS transformation.
+- Owner GSI key conditions select only the correct record type and use base-table strong reads before returning data.
+- The authenticated API includes `GET /v1/private/campaigns` so returning users can discover and reopen saved drafts. Both listing and individual fetch remain owner-scoped.
+- **Publication is disabled by default at the service layer** even if an elevated token is supplied or a route is accidentally exposed. Unit tests that exercise the future release path must opt in explicitly; the Lambda runtime does not.
+- No real Cognito/OIDC users, Cloudflare custom domain, AWS account-specific change set, deployed table or online E2E test exists yet. The existing GitHub Pages demo is local-browser only.
+- Dedicated real repository and IAM deployment role are still separate release requirements; source remains under the temporary preview repository.
+
+Before any creation of billable AWS resources, record explicit Owner approval for the exact AWS account, region, estimated monthly cap, OIDC issuer/audience and least-privilege infrastructure change set. **Nothing here authorizes deployment or publication.**
